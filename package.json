@@ -1,0 +1,23 @@
+{
+  "name": "jeddy",
+  "version": "0.0.1",
+  "description": "web-local text editor",
+  "main": "jeddy.js",
+  "scripts": {
+    "run": "node jeddy.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/invider/jeddy.git"
+  },
+  "author": "Igor Khotin",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/invider/jeddy/issues"
+  },
+  "homepage": "https://github.com/invider/jeddy#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
