@@ -1,4 +1,4 @@
-import { html2md } from './parser.js'
+import { html2md, md2html } from './parser.js'
 
 function save() {
     const path = window.location.hash.substring(1)
@@ -28,7 +28,7 @@ function sync() {
         .then(res => res.text())
         .then(text => {
             const jed = document.getElementById('jed')
-            jed.innerHTML = text
+            jed.innerHTML = md2html(text)
         })
 }
 

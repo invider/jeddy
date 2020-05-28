@@ -126,6 +126,63 @@ export function html2md(source) {
     return out
 }
 
+function createMdLex(stream) {
+    const { getc, retc, aheadc, eof } = stream
+
+    function normalizeLine(line) {
+        let prefix = 0
+        while (line.startsWith(' ')) {
+            prefix ++
+            line = line.substring(1)
+        }
+        for (let i = 0; i < prefix; i++) {
+            line = '&nbsp;' + line
+        }
+        return line
+    }
+
+    function nextLine() {
+        let line = ''
+        let c = getc()
+        
+        while (c && c !== '\n') {
+            line += c
+            c = getc()
+        }
+        return normalizeLine(line)
+    }
+
+
+    function next() {
+        if (eof()) return
+
+        let line = nextLine()
+        return line + '\n'
+    }
+
+    return {
+        next
+    }
+}
+
 export function md2html(source) {
+    const stream = createStream(source)
+    const lex = createMdLex(stream)
+
+    let out = ''
+    let line = lex.next()
+
+    while(line) {
+        out += line
+        console.log(line)
+
+        let next = lex.next()
+        if (line.length > 1 && next && next.length === 1) {
+            next += '<br>'
+        }
+        line = next
+    }
+
+    return out
 }
 
