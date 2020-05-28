@@ -1,15 +1,24 @@
+#!/usr/bin/env node
+
 const fs = require('fs')
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 
+const EXPRESS_PATH = '/node_modules/express/index.js'
+
 let port = 9101
 
 console.log('Jeddy Text Editor')
 
+const expressPath = require.resolve('express')
+if (!expressPath) throw "can't determine Jeddy module home path!"
+const modulePath = expressPath.substring(0, expressPath.length - EXPRESS_PATH.length)
+
 app.use(bodyParser.text())
 
-app.use('/', express.static('pub'))
+console.log(`${modulePath}/pub`)
+app.use('/', express.static(modulePath + '/pub'))
 
 const jopen = '/jed/open*'
 app.get(jopen, (req, res, next) => {

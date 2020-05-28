@@ -4,8 +4,10 @@
   "description": "web-local text editor",
   "main": "jeddy.js",
   "scripts": {
-    "run": "node jeddy.js",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+      "jeddy": "./jeddy.js"
   },
   "repository": {
     "type": "git",

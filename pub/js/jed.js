@@ -1,20 +1,20 @@
-console.log('hi')
+import { html2md } from './parser.js'
 
 function save() {
     const path = window.location.hash.substring(1)
     const jed = document.getElementById('jed')
-    const text = jed.innerHTML
+    const txt = html2md(jed.innerHTML)
 
     const url = 'jed/save/' + path
     console.log(`saving: ${url}`)
-    console.log(text)
+    console.log(txt)
 
     fetch(url, {
         method: 'post',
-        body: text,
+        body: txt,
     }).then(res => res.text())
-    .then(text => {
-        console.log('text')
+    .then(response => {
+        console.log(response)
     })
 }
 
