@@ -1,8 +1,27 @@
 import { html2text, text2html } from './parser.js'
 
+const themes = [
+    'default',
+    'solar',
+    'eclipse',
+    'dark',
+]
+
 function focus() {
     const jed = document.getElementById('jed')
     jed.focus()
+}
+
+function mode(itheme) {
+    if (itheme === undefined) {
+        itheme = (window.itheme || 0) + 1
+        if (itheme >= themes.length) itheme = 0
+    }
+
+    document.documentElement.setAttribute('data-theme', themes[itheme])
+
+    window.itheme = itheme
+    localStorage.setItem('itheme', itheme)
 }
 
 function edit(text) {
@@ -72,6 +91,8 @@ function sync() {
 
 window.onload = function() {
     sync()
+    const theme = localStorage.getItem('itheme')
+    if (theme) mode(parseInt(theme))
 }
 
 window.onhashchange = function() {
@@ -83,15 +104,19 @@ window.onkeydown = function(e) {
 
     if (!e.ctrlKey && !e.altKey && !e.metaKey) {
         switch(e.code) {
-            case 'F1': help(); stop = true; break;
-            case 'F2': save(); stop = true; break;
-            case 'F3': list(); stop = true; break;
+            case 'F1':  help(); stop = true; break;
+            case 'F2':  save(); stop = true; break;
+            case 'F3':  list(); stop = true; break;
+            case 'F10': mode(); stop = true; break;
             case 'Escape': focus(); stop = true; break;
         }
     }
 
-    if (e.ctrlKey && e.code === 'KeyS') {
-        save(); stop = true;
+    if (e.ctrlKey) {
+        switch(e.code) {
+            case 'KeyS': save(); stop = true; break;
+            case 'KeyZ': mode(); stop = true; break;
+        }
     }
 
     if (stop) {
