@@ -34,6 +34,11 @@ function help() {
     window.location.hash = '.help'
 }
 
+function list() {
+    window.location.hash = ''
+    sync()
+}
+
 function save() {
     const path = window.location.hash.substring(1)
     const jed = document.getElementById('jed')
@@ -68,15 +73,21 @@ window.onhashchange = function() {
 }
 
 window.onkeydown = function(e) {
+    let stop = false
 
-    if (e.code === 'F1') {
-        help()
-        e.preventDefault()
-        e.stopPropagation()
+    if (!e.ctrlKey && !e.altKey && !e.metaKey) {
+        switch(e.code) {
+            case 'F1': help(); stop = true; break;
+            case 'F2': save(); stop = true; break;
+            case 'F3': list(); stop = true; break;
+        }
     }
 
     if (e.ctrlKey && e.code === 'KeyS') {
-        save()
+        save(); stop = true;
+    }
+
+    if (stop) {
         e.preventDefault()
         e.stopPropagation()
     }

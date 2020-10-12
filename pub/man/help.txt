@@ -9,5 +9,10 @@ Use browser URL tab to input the path, e.g.:
 
     localhost:9101/#data.txt
 
-Press Ctrl+S to save the file.
+
+Shortcuts
+---------
+F1 - show help
+F2 or Ctrl+S - save the file.
+F3 - list files in edit folder
 
