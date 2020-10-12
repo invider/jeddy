@@ -1,0 +1,13 @@
+==========
+Jeddy Help
+==========
+
+Edit Files
+----------
+
+Use browser URL tab to input the path, e.g.:
+
+    localhost:9101/#data.txt
+
+Press Ctrl+S to save the file.
+

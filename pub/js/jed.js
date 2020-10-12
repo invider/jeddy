@@ -1,9 +1,28 @@
-import { html2md, md2html } from './parser.js'
+import { html2text, text2html } from './parser.js'
+
+function edit(text) {
+    const jed = document.getElementById('jed')
+    jed.innerHTML = text2html(text)
+}
+
+function editPath(url) {
+    console.log(`loading: ${url}`)
+
+    fetch(url)
+        .then(res => res.text())
+        .then(text => {
+            edit(text)
+        })
+}
+
+function help() {
+    editPath('man/help.txt')
+}
 
 function save() {
     const path = window.location.hash.substring(1)
     const jed = document.getElementById('jed')
-    const txt = html2md(jed.innerHTML)
+    const txt = html2text(jed.innerHTML)
 
     const url = 'jed/save/' + path
     console.log(`saving: ${url}`)
@@ -20,16 +39,7 @@ function save() {
 
 function sync() {
     const path = window.location.hash.substring(1)
-
-    const url = 'jed/open/' + path
-    console.log(`loading: ${url}`)
-
-    fetch(url)
-        .then(res => res.text())
-        .then(text => {
-            const jed = document.getElementById('jed')
-            jed.innerHTML = md2html(text)
-        })
+    editPath('jed/open/' + path)
 }
 
 window.onload = function() {
@@ -41,6 +51,13 @@ window.onhashchange = function() {
 }
 
 window.onkeydown = function(e) {
+
+    if (e.code === 'F1') {
+        help()
+        e.preventDefault()
+        e.stopPropagation()
+    }
+
     if (e.ctrlKey && e.code === 'KeyS') {
         save()
         e.preventDefault()
