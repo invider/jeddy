@@ -17,6 +17,7 @@ function editPath(url) {
 
 function help() {
     editPath('man/help.txt')
+    window.location.hash = '.help'
 }
 
 function save() {
@@ -39,7 +40,9 @@ function save() {
 
 function sync() {
     const path = window.location.hash.substring(1)
-    editPath('jed/open/' + path)
+
+    if (path === '.help') help()
+    else editPath('jed/open/' + path)
 }
 
 window.onload = function() {

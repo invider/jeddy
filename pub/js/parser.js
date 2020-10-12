@@ -105,7 +105,7 @@ export function html2text(source) {
     let out = ''
     let token = lex.next()
     while(token) {
-        console.log(token)
+        //console.log(token.t + ': [' + token.v + ']')
         if (token.t === 't') {
             out += token.v
         } else if (token.t === '<') {
@@ -178,8 +178,8 @@ function createTextLex(stream) {
             line += c
             c = getc()
         }
-        line = normalizeLine(line)
         line = escapeHtml(line)
+        line = normalizeLine(line)
         return line
     }
 
