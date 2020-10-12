@@ -3,13 +3,11 @@
     --background-color: #fafac8;
     --primary-color:    #222222;
     --frame-color:      orange;
-}
 
-[data-theme="dark"] {
-    --border-color:     #28283b;
-    --background-color: #1a1a18;
-    --primary-color:    #dedede;
-    --frame-color:      orange;
+    --link-color:       blue;
+    --visited-color:    purple;
+    --hover-color:      orange;
+    --active-color:     red;
 }
 
 [data-theme="solar"] {
@@ -24,7 +22,25 @@
     --background-color: #073642;
     --primary-color:    #93a1a1;
     --frame-color:      #b58900;
+
+    --link-color:       #268bd2;
+    --visited-color:    #6c71c4;
+    --hover-color:      #b58900;
+    --active-color:     #dc322f;
 }
+
+[data-theme="dark"] {
+    --border-color:     #28283b;
+    --background-color: #1a1a18;
+    --primary-color:    #dedede;
+    --frame-color:      orange;
+
+    --link-color:       #268bd2;
+    --visited-color:    #6c71c4;
+    --hover-color:      #b58900;
+    --active-color:     #dc322f;
+}
+
 
 .edit-pane {
     display: flex;
@@ -58,4 +74,17 @@
 
 .jed:focus {
     outline: 2px solid var(--frame-color);
+}
+
+a:link {
+    color: var(--link-color);
+}
+a:visited {
+    color: var(--visited-color);
+}
+a:hover {
+    color: var(--hover-color);
+}
+a:active {
+    color: var(--active-color);
 }
