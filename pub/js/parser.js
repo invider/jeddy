@@ -97,7 +97,7 @@ function createHtmlLex(stream) {
     }
 }
 
-export function html2md(source) {
+export function html2text(source) {
 
     const stream = createStream(source)
     const lex = createHtmlLex(stream)
@@ -110,14 +110,21 @@ export function html2md(source) {
             out += token.v
         } else if (token.t === '<') {
             switch(token.v) {
-                case 'br': out += '\n'
+                case 'br':  out += '\n'; break;
+                case 'div': out += '\n'; break;
             }
         } else if (token.t === '/') {
             switch(token.v) {
-                case 'div': out += '\n'
+                case 'div': out += '\n'; break;
             }
-        } else if (token.t === '&' && token.v === 'nbsp') {
-            out += ' '
+        } else if (token.t === '&') {
+            switch(token.v) {
+                case 'nbsp': out += ' '; break;
+                case 'quot': out += '"'; break;
+                case 'amp':  out += '&'; break;
+                case 'lt':   out += '<'; break;
+                case 'gt':   out += '>'; break;
+            }
         }
 
         token = lex.next()
@@ -126,10 +133,12 @@ export function html2md(source) {
     return out
 }
 
-function createMdLex(stream) {
+function createTextLex(stream) {
     const { getc, retc, aheadc, eof } = stream
 
     function normalizeLine(line) {
+        if (!line) return ''
+
         let prefix = 0
         while (line.startsWith(' ')) {
             prefix ++
@@ -138,6 +147,26 @@ function createMdLex(stream) {
         for (let i = 0; i < prefix; i++) {
             line = '&nbsp;' + line
         }
+
+        let tabfix = 0
+        while (line.startsWith('\t')) {
+            tabfix ++
+            line = line.substring(1)
+        }
+        for (let i = 0; i < tabfix; i++) {
+            line = '&#9;' + line
+        }
+
+        if (prefix || tabfix) return normalizeLine(line)
+        else return line
+    }
+
+    function escapeHtml(line) {
+        if (!line) return ''
+        line = line.replaceAll('"', '&quot;')
+        line = line.replaceAll('&', '&amp;')
+        line = line.replaceAll('<', '&lt;')
+        line = line.replaceAll('>', '&gt;')
         return line
     }
 
@@ -149,15 +178,15 @@ function createMdLex(stream) {
             line += c
             c = getc()
         }
-        return normalizeLine(line)
+        line = normalizeLine(line)
+        line = escapeHtml(line)
+        return line
     }
 
 
     function next() {
         if (eof()) return
-
-        let line = nextLine()
-        return line + '\n'
+        return nextLine()
     }
 
     return {
@@ -165,24 +194,21 @@ function createMdLex(stream) {
     }
 }
 
-export function md2html(source) {
+export function text2html(source) {
     const stream = createStream(source)
-    const lex = createMdLex(stream)
+    const lex = createTextLex(stream)
 
     let out = ''
     let line = lex.next()
 
-    while(line) {
+    while(line !== undefined) {
+        line += '<br>'
         out += line
-        console.log(line)
+        //console.log('[' + line + ']')
 
         let next = lex.next()
-        if (line.length > 1 && next && next.length === 1) {
-            next += '<br>'
-        }
         line = next
     }
 
     return out
 }
-
