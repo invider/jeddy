@@ -1,9 +1,15 @@
 import { html2text, text2html } from './parser.js'
 
+function focus() {
+    const jed = document.getElementById('jed')
+    jed.focus()
+}
+
 function edit(text) {
     const jed = document.getElementById('jed')
     jed.contentEditable = true
     jed.innerHTML = text2html(text)
+    jed.focus()
 }
 
 function show(text) {
@@ -80,6 +86,7 @@ window.onkeydown = function(e) {
             case 'F1': help(); stop = true; break;
             case 'F2': save(); stop = true; break;
             case 'F3': list(); stop = true; break;
+            case 'Escape': focus(); stop = true; break;
         }
     }
 

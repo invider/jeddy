@@ -50,15 +50,16 @@ app.get(jopen, (req, res, next) => {
     }
 
     const path = './' + origPath
-    console.log('path: ' + path)
 
     if (!fs.existsSync(path)) notFound(origPath)
 
     const lstat = fs.lstatSync(path)
     if (lstat.isDirectory()) {
+        console.log('listing: ' + path)
         return listPath(path, true)
 
     } else if (lstat.isFile()) {
+        console.log('loading: ' + path)
         fs.readFile(path, (err, data) => {
             if (err) {
                 console.log(err)
