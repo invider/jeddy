@@ -2,16 +2,30 @@ import { html2text, text2html } from './parser.js'
 
 function edit(text) {
     const jed = document.getElementById('jed')
+    jed.contentEditable = true
     jed.innerHTML = text2html(text)
+}
+
+function show(text) {
+    const jed = document.getElementById('jed')
+    jed.contentEditable = false
+    jed.innerHTML = text
 }
 
 function editPath(url) {
     console.log(`loading: ${url}`)
 
+    let status = 0
     fetch(url)
-        .then(res => res.text())
-        .then(text => {
-            edit(text)
+        .then(res => {
+            status = res.status
+            return res.text()
+        }).then(text => {
+            if (status === 200) {
+                edit(text)
+            } else {
+                show(text)
+            }
         })
 }
 
