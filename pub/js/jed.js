@@ -7,6 +7,11 @@ const themes = [
     'dark',
 ]
 
+const env = {
+    path: '',
+    dirty: false,
+}
+
 function focus() {
     const jed = document.getElementById('jed')
     jed.focus()
@@ -14,13 +19,13 @@ function focus() {
 
 function mode(itheme) {
     if (itheme === undefined) {
-        itheme = (window.itheme || 0) + 1
+        itheme = (env.itheme || 0) + 1
         if (itheme >= themes.length) itheme = 0
     }
 
     document.documentElement.setAttribute('data-theme', themes[itheme])
 
-    window.itheme = itheme
+    env.itheme = itheme
     localStorage.setItem('itheme', itheme)
 }
 
@@ -37,7 +42,13 @@ function show(text) {
     jed.innerHTML = text
 }
 
-function editPath(url) {
+function showStatus(msg, timeout) {
+    msg = msg || '&nbsp;'
+    const status = document.getElementById('status')
+    status.innerHTML = msg
+}
+
+function editPath(url, path) {
     console.log(`loading: ${url}`)
 
     let status = 0
@@ -48,14 +59,22 @@ function editPath(url) {
         }).then(text => {
             if (status === 200) {
                 edit(text)
+                env.path = path
+                showStatus(path)
+            } else if (status === 303) {
+                show(text)
+                env.path = path
+                showStatus(path)
             } else {
                 show(text)
+                env.path = ''
+                showStatus('')
             }
         })
 }
 
 function help() {
-    editPath('man/help.txt')
+    editPath('man/help.txt', '')
     window.location.hash = '.help'
 }
 
@@ -71,13 +90,21 @@ function save() {
 
     const url = 'jed/save/' + path
     console.log(`saving: ${url}`)
-    console.log(txt)
+    //console.log(txt)
 
     fetch(url, {
         method: 'post',
         body: txt,
-    }).then(res => res.text())
-    .then(response => {
+    }).then(res => {
+        if (res.status === 200) {
+            env.dirty = false
+            showStatus('Saved ' + path)
+        } else {
+            showStatus('Error Saving ' + path)
+        }
+        return res.text()
+
+    }) .then(response => {
         console.log(response)
     })
 }
@@ -86,7 +113,7 @@ function sync() {
     const path = window.location.hash.substring(1)
 
     if (path === '.help') help()
-    else editPath('jed/open/' + path)
+    else editPath('jed/open/' + path, path)
 }
 
 window.onload = function() {
@@ -116,6 +143,14 @@ window.onkeydown = function(e) {
         switch(e.code) {
             case 'KeyS': save(); stop = true; break;
             case 'KeyZ': mode(); stop = true; break;
+        }
+    }
+
+    if (!env.dirty && !e.ctrlKey && !e.altKey && !e.metaKey) {
+        const jed = document.getElementById('jed')
+        if (document.activeElement === jed) {
+            env.dirty = true
+            showStatus(env.path)
         }
     }
 

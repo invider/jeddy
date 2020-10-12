@@ -1,47 +1,3 @@
-:root {
-    --border-color:     #808080;
-    --background-color: #fafac8;
-    --primary-color:    #222222;
-    --frame-color:      orange;
-
-    --link-color:       blue;
-    --visited-color:    purple;
-    --hover-color:      orange;
-    --active-color:     red;
-}
-
-[data-theme="solar"] {
-    --border-color:     #657b83;
-    --background-color: #eee8d5;
-    --primary-color:    #586e75;
-    --frame-color:      #b58900;
-}
-
-[data-theme="eclipse"] {
-    --border-color:     #002b36;
-    --background-color: #073642;
-    --primary-color:    #93a1a1;
-    --frame-color:      #b58900;
-
-    --link-color:       #268bd2;
-    --visited-color:    #6c71c4;
-    --hover-color:      #b58900;
-    --active-color:     #dc322f;
-}
-
-[data-theme="dark"] {
-    --border-color:     #28283b;
-    --background-color: #1a1a18;
-    --primary-color:    #dedede;
-    --frame-color:      orange;
-
-    --link-color:       #268bd2;
-    --visited-color:    #6c71c4;
-    --hover-color:      #b58900;
-    --active-color:     #dc322f;
-}
-
-
 .edit-pane {
     display: flex;
     align-items: center;
@@ -53,6 +9,18 @@
     padding: 0;
     margin: 0;
     overflow: hidden;
+}
+
+#status {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    padding: 5px;
+    text-align: right;
+    font-size: 20;
+    color: var(--status-color);
+    background-color: var(--status-background);
 }
 
 .jed {
