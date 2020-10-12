@@ -26,7 +26,7 @@ function mode(itheme) {
     document.documentElement.setAttribute('data-theme', themes[itheme])
 
     env.itheme = itheme
-    localStorage.setItem('itheme', itheme)
+    localStorage.setItem('theme', itheme)
 }
 
 function edit(text) {
@@ -118,8 +118,13 @@ function sync() {
 
 window.onload = function() {
     sync()
-    const theme = localStorage.getItem('itheme')
+
+    // determine the theme
+    const theme = localStorage.getItem('theme')
     if (theme) mode(parseInt(theme))
+
+    const jed = document.getElementById('jed')
+    jed.onblur = () => focus() // stay always in focus
 }
 
 window.onhashchange = function() {
