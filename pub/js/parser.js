@@ -163,7 +163,7 @@ function createTextLex(stream) {
 
     function escapeHtml(line) {
         if (!line) return ''
-        line = line.replaceAll('"', '&quot;')
+        //line = line.replaceAll('"', '&quot;')
         line = line.replaceAll('&', '&amp;')
         line = line.replaceAll('<', '&lt;')
         line = line.replaceAll('>', '&gt;')
