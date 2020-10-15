@@ -104,6 +104,7 @@ export function html2text(source) {
 
     let out = ''
     let token = lex.next()
+    let lastToken = {}
     while(token) {
         if (env.debug) {
             console.log(token.t + ': [' + token.v + ']')
@@ -112,12 +113,23 @@ export function html2text(source) {
             out += token.v
         } else if (token.t === '<') {
             switch(token.v) {
-                case 'br':  out += '\n'; break;
-                case 'div': out += '\n'; break;
+                case 'br':
+                    if (lastToken.t !== '<' || lastToken.v !== 'div') {
+                        out += '\n'
+                    }
+                    break
+                case 'div':
+                    //if (lastToken.t !== '/' || lastToken.v !== 'div') {
+                    out += '\n'
+                    //}
+                    break
             }
+
         } else if (token.t === '/') {
             switch(token.v) {
-                case 'div': out += '\n'; break;
+                case 'div':
+                    if (lastToken.v !== 'br') out += '\n';
+                    break;
             }
         } else if (token.t === '&') {
             switch(token.v) {
@@ -129,6 +141,7 @@ export function html2text(source) {
             }
         }
 
+        lastToken = token
         token = lex.next()
     }
 
