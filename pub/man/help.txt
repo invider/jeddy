@@ -15,5 +15,5 @@ Shortcuts
 F1 - show help
 F2 or Ctrl+S - save the file.
 F3 - list files in edit folder
-Ctrl+Z
+F10 or Ctrl+M - change the color scheme
 

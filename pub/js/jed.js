@@ -11,6 +11,7 @@ const env = {
     path: '',
     dirty: false,
 }
+window.env = env
 
 function focus() {
     const jed = document.getElementById('jed')
@@ -147,7 +148,7 @@ window.onkeydown = function(e) {
     if (e.ctrlKey) {
         switch(e.code) {
             case 'KeyS': save(); stop = true; break;
-            case 'KeyZ': mode(); stop = true; break;
+            case 'KeyM': mode(); stop = true; break;
         }
     }
 
