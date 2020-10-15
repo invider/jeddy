@@ -105,7 +105,9 @@ export function html2text(source) {
     let out = ''
     let token = lex.next()
     while(token) {
-        //console.log(token.t + ': [' + token.v + ']')
+        if (env.debug) {
+            console.log(token.t + ': [' + token.v + ']')
+        }
         if (token.t === 't') {
             out += token.v
         } else if (token.t === '<') {
