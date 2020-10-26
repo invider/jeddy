@@ -102,7 +102,13 @@ export function html2text(source) {
     const stream = createStream(source)
     const lex = createHtmlLex(stream)
 
-    let out = ''
+    let output = ''
+    let lastOut = ''
+    function out(text) {
+        output += text
+        lastOut = text
+    }
+
     let token = lex.next()
     let lastToken = {}
     while(token) {
@@ -110,17 +116,19 @@ export function html2text(source) {
             console.log(token.t + ': [' + token.v + ']')
         }
         if (token.t === 't') {
-            out += token.v
+            out(token.v)
         } else if (token.t === '<') {
             switch(token.v) {
                 case 'br':
                     if (lastToken.t !== '<' || lastToken.v !== 'div') {
-                        out += '\n'
+                        out('\n')
                     }
                     break
                 case 'div':
                     //if (lastToken.t !== '/' || lastToken.v !== 'div') {
-                    out += '\n'
+                    if (lastOut !== '\n') {
+                        out('\n')
+                    }
                     //}
                     break
             }
@@ -128,16 +136,16 @@ export function html2text(source) {
         } else if (token.t === '/') {
             switch(token.v) {
                 case 'div':
-                    if (lastToken.v !== 'br') out += '\n';
+                    if (lastToken.v !== 'br') out('\n');
                     break;
             }
         } else if (token.t === '&') {
             switch(token.v) {
-                case 'nbsp': out += ' '; break;
-                case 'quot': out += '"'; break;
-                case 'amp':  out += '&'; break;
-                case 'lt':   out += '<'; break;
-                case 'gt':   out += '>'; break;
+                case 'nbsp': out(' '); break;
+                case 'quot': out('"'); break;
+                case 'amp':  out('&'); break;
+                case 'lt':   out('<'); break;
+                case 'gt':   out('>'); break;
             }
         }
 
@@ -145,7 +153,7 @@ export function html2text(source) {
         token = lex.next()
     }
 
-    return out
+    return output
 }
 
 function createTextLex(stream) {
