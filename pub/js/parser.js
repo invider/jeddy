@@ -120,9 +120,12 @@ export function html2text(source) {
         } else if (token.t === '<') {
             switch(token.v) {
                 case 'br':
-                    if (lastToken.t !== '<' || lastToken.v !== 'div') {
-                        out('\n')
+                    out('\n')
+                    /*
+                    if (lastToken.t !== '<' || lastToken.v !== 'div'
+                            || (lastOut !== '\n')) {
                     }
+                    */
                     break
                 case 'div':
                     //if (lastToken.t !== '/' || lastToken.v !== 'div') {
