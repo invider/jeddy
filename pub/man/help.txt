@@ -12,8 +12,8 @@ Use browser URL tab to input the path, e.g.:
 
 Shortcuts
 ---------
-F1 - show help
-F2 or Ctrl+S - save the file.
-F3 - list files in edit folder
+F1  or Ctrl+H - show help
+F2  or Ctrl+S - save the file.
+F3  or Ctrl+Z - list files in edit folder
 F10 or Ctrl+M - change the color scheme
 

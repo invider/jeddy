@@ -137,17 +137,19 @@ window.onkeydown = function(e) {
 
     if (!e.ctrlKey && !e.altKey && !e.metaKey) {
         switch(e.code) {
-            case 'F1':  help(); stop = true; break;
-            case 'F2':  save(); stop = true; break;
-            case 'F3':  list(); stop = true; break;
-            case 'F10': mode(); stop = true; break;
-            case 'Escape': focus(); stop = true; break;
+            case 'F1':      help(); stop = true; break;
+            case 'F2':      save(); stop = true; break;
+            case 'F3':      list(); stop = true; break;
+            case 'F10':     mode(); stop = true; break;
+            case 'Escape':  focus(); stop = true; break;
         }
     }
 
     if (e.ctrlKey) {
         switch(e.code) {
+            case 'KeyH': help(); stop = true; break;
             case 'KeyS': save(); stop = true; break;
+            case 'KeyZ': list(); stop = true; break;
             case 'KeyM': mode(); stop = true; break;
         }
     }
