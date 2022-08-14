@@ -1,3 +1,8 @@
+@font-face {
+    font-family: PixelOperator;
+    src: url(../fnt/PixelOperator.ttf);
+}
+
 .edit-pane {
     display: flex;
     align-items: center;
@@ -34,7 +39,9 @@
     border-width: 1px;
     border-color: #909090;
 
-    font-family: 'Merriweather', serif;
+    font-family: var(--primary-font);
+    #font-family: 'PixelOperator';
+    #font-family: 'Merriweather', serif;
     font-size: 24;
     padding: 20px;
     color: var(--primary-color);

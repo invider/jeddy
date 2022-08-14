@@ -1,4 +1,6 @@
 :root {
+    --primary-font:     'Merriweather', serif;
+    
     --border-color:     #808080;
     --background-color: #fafac8;
     --primary-color:    #222222;
@@ -14,6 +16,8 @@
 }
 
 [data-theme="solar"] {
+    --primary-font:     'PixelOperator', serif;
+
     --border-color:     #657b83;
     --background-color: #eee8d5;
     --primary-color:    #586e75;
@@ -39,6 +43,8 @@
 }
 
 [data-theme="dark"] {
+    --primary-font:     'PixelOperator', serif;
+
     --border-color:     #28283b;
     --background-color: #1a1a18;
     --primary-color:    #dedede;
