@@ -1,3 +1,4 @@
 #!/bin/sh
 
+# are we actually using monaco now?
 cp -r ./node_modules/monaco-editor/min/vs ./pub/js
