@@ -58,3 +58,15 @@
     --status-color:      #93a1a1;
     --status-background: #38384b;
 }
+
+[data-theme="amber-term"] {
+    --primary-font:     'PixelOperator', serif;
+
+    --border-color:     #181000;
+
+    --primary-color:    #FF9400;
+    --background-color: #2B1900;
+
+    --status-color:      #FF9400;
+    --status-background: #2B1900;
+}

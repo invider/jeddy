@@ -5,6 +5,7 @@ const themes = [
     'solar',
     'eclipse',
     'dark',
+    'amber-term',
 ]
 
 const env = {
