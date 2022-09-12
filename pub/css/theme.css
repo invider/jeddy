@@ -5,6 +5,7 @@
     --background-color: #fafac8;
     --primary-color:    #222222;
     --frame-color:      orange;
+    --selection:        #A0A0C0;
 
     --link-color:       blue;
     --visited-color:    purple;
@@ -63,10 +64,35 @@
     --primary-font:     'PixelOperator', serif;
 
     --border-color:     #181000;
+    --frame-color:      #FF9400;
 
     --primary-color:    #FF9400;
     --background-color: #2B1900;
 
+    --link-color:       #FF9400;
+    --visited-color:    #CF6400;
+    --hover-color:      #FFB400;
+    --active-color:     #FFB420;
+
     --status-color:      #FF9400;
     --status-background: #2B1900;
+}
+
+[data-theme="green-term"] {
+    --primary-font:     'PixelOperator', serif;
+
+    --border-color:     #020500;
+    --frame-color:      #FF9400;
+
+    --primary-color:    #0BFF00;
+    --background-color: #021700;
+    --selection:        #203015;
+
+    --link-color:       #0BFF00;
+    --visited-color:    #07AF00;
+    --hover-color:      #9BFF90;
+    --active-color:     #EBFF80;
+
+    --status-color:      #0BFF00;
+    --status-background: #202820;
 }

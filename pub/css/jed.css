@@ -24,6 +24,7 @@
     padding: 5px;
     text-align: right;
     font-size: 20;
+    font-family: var(--primary-font);
     color: var(--status-color);
     background-color: var(--status-background);
 }
@@ -62,4 +63,8 @@ a:hover {
 }
 a:active {
     color: var(--active-color);
+}
+
+::selection {
+    background-color: var(--selection);
 }
