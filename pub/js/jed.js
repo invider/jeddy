@@ -6,6 +6,7 @@ const themes = [
     'eclipse',
     'dark',
     'amber-term',
+    'green-term',
     'e-ink',
 ]
 
