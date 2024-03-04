@@ -12,6 +12,8 @@ const themes = [
 const env = {
     path: '',
     dirty: false,
+    lastSave: 0,
+    autoSave: 20,
 }
 window.env = env
 
@@ -87,14 +89,13 @@ function list() {
     sync()
 }
 
-function save() {
+function save(silent) {
     const path = window.location.hash.substring(1)
     const jed = document.getElementById('jed')
     const txt = html2text(jed.innerHTML)
 
     const url = 'jed/save/' + path
-    console.log(`saving: ${url}`)
-    //console.log(txt)
+    if (!silent) console.log(`saving: ${url}`)
 
     fetch(url, {
         method: 'post',
@@ -102,6 +103,7 @@ function save() {
     }).then(res => {
         if (res.status === 200) {
             env.dirty = false
+            env.lastSave = Date.now()
             showStatus('Saved ' + path)
         } else {
             showStatus('Error Saving ' + path)
@@ -109,7 +111,7 @@ function save() {
         return res.text()
 
     }) .then(response => {
-        console.log(response)
+        //console.log(response)
     })
 }
 
@@ -120,15 +122,12 @@ function sync() {
     else editPath('jed/open/' + path, path)
 }
 
-window.onload = function() {
-    sync()
-
-    // determine the theme
-    const theme = localStorage.getItem('theme')
-    if (theme) mode(parseInt(theme))
-
-    const jed = document.getElementById('jed')
-    jed.onblur = () => focus() // stay always in focus
+function check() {
+    const now = Date.now()
+    const passed = now - env.lastSave
+    if (env.dirty && passed > env.autoSave * 1000) {
+        save(true)
+    }
 }
 
 window.onhashchange = function() {
@@ -169,4 +168,17 @@ window.onkeydown = function(e) {
         e.preventDefault()
         e.stopPropagation()
     }
+}
+
+window.onload = function() {
+    sync()
+
+    // determine the theme
+    const theme = localStorage.getItem('theme')
+    if (theme) mode(parseInt(theme))
+
+    const jed = document.getElementById('jed')
+    jed.onblur = () => focus() // stay always in focus
+
+    setInterval(check, 1000)
 }
