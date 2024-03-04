@@ -6,6 +6,7 @@ const themes = [
     'eclipse',
     'dark',
     'amber-term',
+    'e-ink',
 ]
 
 const env = {
@@ -25,6 +26,7 @@ function mode(itheme) {
         if (itheme >= themes.length) itheme = 0
     }
 
+    console.log('theme: ' + themes[itheme])
     document.documentElement.setAttribute('data-theme', themes[itheme])
 
     env.itheme = itheme

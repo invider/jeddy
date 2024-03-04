@@ -1,5 +1,7 @@
 :root {
     --primary-font:     'Merriweather', serif;
+    --font-size:        24;
+    --jed-width:        55%; 
     
     --border-color:     #808080;
     --background-color: #fafac8;
@@ -17,6 +19,8 @@
 
 [data-theme="solar"] {
     --primary-font:     'PixelOperator', serif;
+    --font-size:        24;
+    --jed-width:        55%; 
 
     --border-color:     #657b83;
     --background-color: #eee8d5;
@@ -28,6 +32,9 @@
 }
 
 [data-theme="eclipse"] {
+    --font-size:        24;
+    --jed-width:        55%; 
+
     --border-color:     #002b36;
     --background-color: #073642;
     --primary-color:    #93a1a1;
@@ -44,6 +51,8 @@
 
 [data-theme="dark"] {
     --primary-font:     'PixelOperator', serif;
+    --font-size:        24;
+    --jed-width:        55%; 
 
     --border-color:     #28283b;
     --background-color: #1a1a18;
@@ -61,6 +70,8 @@
 
 [data-theme="amber-term"] {
     --primary-font:     'PixelOperator', serif;
+    --font-size:        24;
+    --jed-width:        55%; 
 
     --border-color:     #181000;
 
@@ -69,4 +80,19 @@
 
     --status-color:      #FF9400;
     --status-background: #2B1900;
+}
+
+[data-theme="e-ink"] {
+    --primary-font:     'EB Garamond', serif;
+    --font-size:        32;
+    --jed-width:        100%; 
+
+    --border-color:     #FFFFFF;
+    --frame-color:      orange;
+
+    --primary-color:    #000000;
+    --background-color: #FFFFFF;
+
+    --status-color:      #606060;
+    --status-background: #B0B0B0;
 }
