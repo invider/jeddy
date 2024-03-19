@@ -1,3 +1,8 @@
+> temporary messages in the status line
+> hide status line
+> configuration text file
+> sandbox buffer
+> save new buffer
 > dirty flag instead of save message
 > sandbox buffers
 > cache changes in localstore on dirty each 3s or each N strokes

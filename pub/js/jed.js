@@ -105,9 +105,9 @@ function save(silent) {
         if (res.status === 200) {
             env.dirty = false
             env.lastSave = Date.now()
-            showStatus('Saved ' + path)
+            showStatus(path)
         } else {
-            showStatus('Error Saving ' + path)
+            showStatus(`Can't save !${path}`)
         }
         return res.text()
 
@@ -161,7 +161,8 @@ window.onkeydown = function(e) {
         const jed = document.getElementById('jed')
         if (document.activeElement === jed) {
             env.dirty = true
-            showStatus(env.path)
+            env.lastSave = Date.now()
+            showStatus(`*${env.path}`)
         }
     }
 
