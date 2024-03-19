@@ -1,3 +1,4 @@
+> dirty flag instead of save message
 > sandbox buffers
 > cache changes in localstore on dirty each 3s or each N strokes
 > ability to browse localstore buffers
@@ -9,4 +10,3 @@
 > simple black and white themes
 V a status line to show 'Saved to ...' messages
 V non-editable directory listing
-
