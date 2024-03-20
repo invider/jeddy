@@ -2,18 +2,21 @@
 
 const fs = require('fs')
 const express = require('express')
-const app = express()
 const bodyParser = require('body-parser')
+const argsParser = require('./js/argsParser.js')
 const util = require('./js/util')
 
+let port = 9101
 const EXPRESS_PATH = '/node_modules/express/index.js'
 
-let port = 9101
+const env = argsParser(process.argv)
+
+const app = express()
 
 console.log('Jeddy Text Editor')
 
 const expressPath = require.resolve('express')
-if (!expressPath) throw "can't determine Jeddy module home path!"
+if (!expressPath) throw "Can't determine Jeddy module home path!"
 const modulePath = expressPath.substring(0, expressPath.length - EXPRESS_PATH.length)
 
 app.use(bodyParser.text())
@@ -102,6 +105,5 @@ app.post(jsave, (req, res, next) => {
     })
 })
 
-
-app.listen(port, () => console.log('Listening at http://localhost:' + port))
+app.listen(env.port, env.bind, () => console.log(`Listening at http://${env.bind}:${env.port}`))
 
