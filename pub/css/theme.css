@@ -7,7 +7,7 @@
     --background-color: #fafac8;
     --primary-color:    #222222;
     --frame-color:      orange;
-    --selection:        #A0A0C0;
+    --selection:        #E0E0B0;
 
     --link-color:       blue;
     --visited-color:    purple;
@@ -27,6 +27,7 @@
     --background-color: #eee8d5;
     --primary-color:    #586e75;
     --frame-color:      #b58900;
+    --selection:        #C8C8B8;
 
     --status-color:      #93a1a1;
     --status-background: #586e75;
@@ -40,6 +41,7 @@
     --background-color: #073642;
     --primary-color:    #93a1a1;
     --frame-color:      #b58900;
+    --selection:        #275662;
 
     --link-color:       #268bd2;
     --visited-color:    #6c71c4;
@@ -59,6 +61,7 @@
     --background-color: #1a1a18;
     --primary-color:    #dedede;
     --frame-color:      orange;
+    --selection:        #3a3a38;
 
     --link-color:       #268bd2;
     --visited-color:    #6c71c4;
@@ -121,6 +124,7 @@
 
     --primary-color:    #000000;
     --background-color: #FFFFFF;
+    --selection:        #D0D0D0;
 
     --status-color:      #606060;
     --status-background: #B0B0B0;

@@ -5,11 +5,18 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const argsParser = require('./js/argsParser.js')
 const util = require('./js/util')
+const help = require('./js/help')
 
 let port = 9101
 const EXPRESS_PATH = '/node_modules/express/index.js'
 
 const env = argsParser(process.argv)
+
+if (env.action === 'help') {
+    help()
+    return
+}
+
 
 const app = express()
 

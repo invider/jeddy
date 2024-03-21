@@ -28,6 +28,11 @@ function argsParser(argv) {
             case '--debug':
                 env.debug = true
                 break
+
+            case '-h':
+            case '--help':
+                env.action = 'help'
+                break
         }
 
         i++
