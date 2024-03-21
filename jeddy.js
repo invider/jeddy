@@ -13,15 +13,19 @@ const env = argsParser(process.argv)
 
 const app = express()
 
-console.log('Jeddy Text Editor')
+console.log('Jeddy Local Web Text Editor')
+console.log('Version: 0.1')
 
 const expressPath = require.resolve('express')
 if (!expressPath) throw "Can't determine Jeddy module home path!"
 const modulePath = expressPath.substring(0, expressPath.length - EXPRESS_PATH.length)
+env.jeddyBase = modulePath
+env.jeddyPub  = modulePath + '/pub'
 
 app.use(bodyParser.text())
 
-console.log(`${modulePath}/pub`)
+console.log(`Working Dir: ${env.editPath}`)
+if (env.debug) console.log(`Jeddy Base: ${env.jeddyBase}`)
 app.use('/', express.static(modulePath + '/pub'))
 
 const jopen = '/jed/open*'
