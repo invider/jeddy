@@ -21,6 +21,7 @@
     padding: 0;
     margin: 0;
     overflow: hidden;
+
 }
 
 #status {
@@ -52,6 +53,7 @@
     font-size: var(--font-size);
     padding: 20px;
     color: var(--primary-color);
+
 }
 
 .jed:focus {
@@ -73,4 +75,25 @@ a:active {
 
 ::selection {
     background-color: var(--selection);
+}
+
+::-webkit-scrollbar {
+    width: 20px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb-disabled);
+    border-radius: 4px;
+}
+
+div:hover::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb-focused);
+}
+
+div:hover::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
 }

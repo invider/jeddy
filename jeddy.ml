@@ -5,6 +5,8 @@
 > save new buffer
 > dirty flag instead of save message
 > sandbox buffers
+> readonly buffers
+> open files in the read-only mode
 > cache changes in localstore on dirty each 3s or each N strokes
 > ability to browse localstore buffers
 > prevent save of read-only files (like help)

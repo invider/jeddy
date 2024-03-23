@@ -16,6 +16,11 @@
 
     --status-color:      #c0c0c0;
     --status-background: #707070;
+
+    --scrollbar-track:          #404045;
+    --scrollbar-thumb-disabled: #505055;
+    --scrollbar-thumb-focused:  #606070;
+    --scrollbar-thumb-hover:    #A07020;
 }
 
 [data-theme="solar"] {
@@ -88,9 +93,12 @@
     --visited-color:    #CF6400;
     --hover-color:      #FFB400;
     --active-color:     #FFB420;
+    
+    --scrollbar-color: rebeccapurple green;
 
     --status-color:      #FF9400;
     --status-background: #2B1900;
+
 }
 
 [data-theme="green-term"] {
@@ -128,4 +136,9 @@
 
     --status-color:      #606060;
     --status-background: #B0B0B0;
+
+    --scrollbar-track:          #E0E0E0;
+    --scrollbar-thumb-disabled: #C0C0C0;
+    --scrollbar-thumb-focused:  #A0A0A0;
+    --scrollbar-thumb-hover:    #A0A0A0;
 }
