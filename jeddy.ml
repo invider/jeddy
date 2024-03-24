@@ -1,9 +1,10 @@
+> introduce stat
 > temporary messages in the status line
 > hide status line
 > configuration text file
 > sandbox buffer
 > save new buffer
-> dirty flag instead of save message
+V dirty flag instead of save message
 > sandbox buffers
 > readonly buffers
 > open files in the read-only mode

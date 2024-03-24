@@ -5,6 +5,9 @@ const util = require('./util.js')
 
 const EXPRESS_PATH = '/node_modules/express/index.js'
 
+const jopen = '/jed/open*'
+const jsave = '/jed/save*'
+
 function loadHandler(req, res, next) {
     const origPath = req.path.substring(jopen.length)
 
@@ -70,9 +73,11 @@ function saveHandler(req, res, next) {
     }
 
     const path = './' + origPath
+    if (env.trace) console.log('---------------------------------------')
     console.log('saving: ' + path)
-    if (env.debug) console.log('data: ' + req.body.toString())
-    console.log('----')
+    if (env.trace) console.log('---------------------------------------')
+    if (env.trace) console.log(req.body.toString())
+    if (env.trace) console.log('=======================================')
 
     fs.writeFile(path, req.body, (err) => {
         if (err) {
@@ -100,10 +105,8 @@ function serve(env) {
 
     app.use('/', express.static(modulePath + '/pub'))
 
-    const jopen = '/jed/open*'
     app.get(jopen, loadHandler)
 
-    const jsave = '/jed/save*'
     app.post(jsave, saveHandler)
 
     app.listen(env.port, env.bind, () => console.log(`Listening at http://${env.bind}:${env.port}`))

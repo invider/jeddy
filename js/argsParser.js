@@ -4,6 +4,7 @@ function argsParser(argv) {
         bind:   'localhost',
         action: 'host-dir',
         debug:  false,
+        trace:  false,
     }
     env.editPath = process.cwd()
 
@@ -27,6 +28,11 @@ function argsParser(argv) {
             case '-d':
             case '--debug':
                 env.debug = true
+                break
+
+            case '-t':
+            case '--trace':
+                env.trace = true
                 break
 
             case '-h':
