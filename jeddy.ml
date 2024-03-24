@@ -1,6 +1,6 @@
 > introduce stat
 > temporary messages in the status line
-> hide status line
+V hide status line
 > configuration text file
 > sandbox buffer
 > save new buffer

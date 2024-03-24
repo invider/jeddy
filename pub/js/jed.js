@@ -15,6 +15,8 @@ const env = {
     dirty: false,
     lastSave: 0,
     autoSave: 20,
+    itheme:   0,
+    ilayout:  0,
 }
 window.env = env
 
@@ -23,7 +25,7 @@ function focus() {
     jed.focus()
 }
 
-function mode(itheme) {
+function switchTheme(itheme) {
     if (itheme === undefined) {
         itheme = (env.itheme || 0) + 1
         if (itheme >= themes.length) itheme = 0
@@ -34,6 +36,28 @@ function mode(itheme) {
 
     env.itheme = itheme
     localStorage.setItem('theme', itheme)
+}
+
+function switchLayout(ilayout) {
+    if (ilayout === undefined) {
+        ilayout = env.ilayout + 1
+    }
+    if (ilayout > 1) {
+        ilayout = 0
+    }
+
+    console.log('layout: ' + ilayout)
+    const status = document.getElementById('status')
+    switch(ilayout) {
+        case 0:
+            status.style.display = 'block'
+            break
+        case 1:
+            status.style.display = 'none'
+            break
+    }
+    env.ilayout = ilayout
+    localStorage.setItem('layout', ilayout)
 }
 
 function edit(text) {
@@ -120,7 +144,7 @@ function sync() {
     const path = window.location.hash.substring(1)
 
     if (path === '.help') help()
-    else editPath('jed/open/' + path, path)
+    else editPath('jed/load/' + path, path)
 }
 
 function check() {
@@ -143,7 +167,8 @@ window.onkeydown = function(e) {
             case 'F1':      help(); stop = true; break;
             case 'F2':      save(); stop = true; break;
             case 'F3':      list(); stop = true; break;
-            case 'F10':     mode(); stop = true; break;
+            case 'F10':     switchTheme();  stop = true; break;
+            case 'F11':     switchLayout(); stop = true; break;
             case 'Escape':  focus(); stop = true; break;
         }
     }
@@ -153,7 +178,8 @@ window.onkeydown = function(e) {
             case 'KeyH': help(); stop = true; break;
             case 'KeyS': save(); stop = true; break;
             case 'KeyZ': list(); stop = true; break;
-            case 'KeyM': mode(); stop = true; break;
+            case 'KeyM': switchTheme();  stop = true; break;
+            case 'KeyL': switchLayout(); stop = true; break;
         }
     }
 
@@ -175,9 +201,14 @@ window.onkeydown = function(e) {
 window.onload = function() {
     sync()
 
-    // determine the theme
-    const theme = localStorage.getItem('theme')
-    if (theme) mode(parseInt(theme))
+    // determine the theme if stored
+    const themeStr = localStorage.getItem('theme')
+    if (themeStr) switchTheme(parseInt(themeStr))
+
+    // determine the layout if stored
+    const layoutStr = localStorage.getItem('layout')
+    if (layoutStr) switchLayout(parseInt(layoutStr))
+
 
     const jed = document.getElementById('jed')
     jed.onblur = () => focus() // stay always in focus

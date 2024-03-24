@@ -5,8 +5,10 @@ const util = require('./util.js')
 
 const EXPRESS_PATH = '/node_modules/express/index.js'
 
-const jopen = '/jed/open*'
+const jopen = '/jed/load*'
 const jsave = '/jed/save*'
+
+let env = {}
 
 function loadHandler(req, res, next) {
     const origPath = req.path.substring(jopen.length)
@@ -89,8 +91,9 @@ function saveHandler(req, res, next) {
     })
 }
 
-function serve(env) {
+function serve(environment) {
     const app = express()
+    env = environment
 
     const expressPath = require.resolve('express')
     if (!expressPath) throw "Can't determine Jeddy module home path!"
