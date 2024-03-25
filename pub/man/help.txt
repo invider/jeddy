@@ -2,19 +2,45 @@
 Jeddy Help
 ==========
 
-Edit Files
 ----------
-
-Use browser URL tab to input the path, e.g.:
-
-    localhost:9101/#data.txt
-
-
 Shortcuts
----------
+----------
+Esc - return focus to the editor
 F1  or Ctrl+H - show help
 F2  or Ctrl+S - save the file.
-F3  or Ctrl+Z - list files in the work folder
+F3  or Ctrl+Q - list files in the work folder
 F10 or Ctrl+M - switch the mood
 F11 or Ctrl+L - switch the layout
+
+-- text manipulation --
+Ctrl + A - select all
+Ctrl + X - cut selection
+Ctrl + C - copy selection
+Ctrl + V - paste the clipboard text
+Ctrl + Z - undo
+Ctrl + Y - redo
+
+
+-----------
+How to Run
+-----------
+Run jeddy in the work folder by running the "jeddy" command in the terminal:
+
+    jeddy
+
+Now you can open browser at:
+
+    localhost:9101
+
+It will show the work folder file manifest by default.
+
+Click on a file hyperlink to edit.
+
+
+You can open a file directly by providing it's relative path in the URL string, e.g.:
+
+
+    localhost:9101/#.data.txt
+
+Opens work-folder/data.txt.
 

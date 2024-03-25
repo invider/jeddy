@@ -1,9 +1,10 @@
 import { html2text, text2html } from './parser.js'
+import { bufferControl } from './buffer.js'
 
 const themes = [
     'default',
-    'solar',
-    'eclipse',
+    'solar',      // light solarized
+    'eclipse',    // dark solarized
     'dark',
     'amber-term',
     'green-term',
@@ -60,14 +61,20 @@ function switchLayout(ilayout) {
     localStorage.setItem('layout', ilayout)
 }
 
-function edit(text) {
+function edit(text, path) {
     const jed = document.getElementById('jed')
-    jed.contentEditable = true
-    jed.innerHTML = text2html(text)
-    jed.focus()
+    bufferControl.createBuffer({
+        text,
+        path,
+        jed,
+        readOnly: false,
+    })
+    //jed.contentEditable = true
+    //jed.innerHTML = text2html(text)
+    //jed.focus()
 }
 
-function show(text) {
+function showHTML(text, path) {
     const jed = document.getElementById('jed')
     jed.contentEditable = false
     jed.innerHTML = text
@@ -89,15 +96,15 @@ function editPath(url, path) {
             return res.text()
         }).then(text => {
             if (status === 200) {
-                edit(text)
+                edit(text, path)
                 env.path = path
                 showStatus(path)
             } else if (status === 303) {
-                show(text)
+                showHTML(text, path)
                 env.path = path
                 showStatus(path)
             } else {
-                show(text)
+                showHTML(text)
                 env.path = ''
                 showStatus('')
             }
@@ -107,6 +114,17 @@ function editPath(url, path) {
 function help() {
     editPath('man/help.txt', '')
     window.location.hash = '.help'
+}
+
+function buffers() {
+    console.log('listing buffers - ' + bufferControl.buffers.length)
+    const path = '.buffers'
+    const ls = bufferControl.listBuffers()
+    console.log(ls)
+    showHTML(ls, path)
+    env.path = path
+    showStatus(path)
+    window.location.hash = path
 }
 
 function list() {
@@ -144,6 +162,7 @@ function sync() {
     const path = window.location.hash.substring(1)
 
     if (path === '.help') help()
+    else if (path === '.buffers') buffers()
     else editPath('jed/load/' + path, path)
 }
 
@@ -167,6 +186,7 @@ window.onkeydown = function(e) {
             case 'F1':      help(); stop = true; break;
             case 'F2':      save(); stop = true; break;
             case 'F3':      list(); stop = true; break;
+            case 'F4':      buffers(); stop = true; break;
             case 'F10':     switchTheme();  stop = true; break;
             case 'F11':     switchLayout(); stop = true; break;
             case 'Escape':  focus(); stop = true; break;
@@ -177,7 +197,8 @@ window.onkeydown = function(e) {
         switch(e.code) {
             case 'KeyH': help(); stop = true; break;
             case 'KeyS': save(); stop = true; break;
-            case 'KeyZ': list(); stop = true; break;
+            case 'KeyQ': list(); stop = true; break;
+            case 'KeyB': buffers(); stop = true; break;
             case 'KeyM': switchTheme();  stop = true; break;
             case 'KeyL': switchLayout(); stop = true; break;
         }
