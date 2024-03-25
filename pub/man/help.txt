@@ -9,16 +9,24 @@ Esc - return focus to the editor
 F1  or Ctrl+H - show help
 F2  or Ctrl+S - save the file.
 F3  or Ctrl+Q - list files in the work folder
+F4  or Ctrl+B - list active buffers
 F10 or Ctrl+M - switch the mood
 F11 or Ctrl+L - switch the layout
 
 -- text manipulation --
+Arrow Keys - move the cursor
 Ctrl + A - select all
 Ctrl + X - cut selection
 Ctrl + C - copy selection
 Ctrl + V - paste the clipboard text
 Ctrl + Z - undo
 Ctrl + Y - redo
+Ctrl + Home - jump to the beginning
+Ctrl + End - jump to the end
+Home - jump to the beginning of the current line
+End - jump to the end of the current line
+PageUp - jump one screen up
+PageDown - jump one screen down
 
 
 -----------
@@ -28,7 +36,7 @@ Run jeddy in the work folder by running the "jeddy" command in the terminal:
 
     jeddy
 
-Now you can open browser at:
+Now you can open the browser at:
 
     localhost:9101
 
@@ -43,4 +51,12 @@ You can open a file directly by providing it's relative path in the URL string, 
     localhost:9101/#.data.txt
 
 Opens work-folder/data.txt.
+
+
+
+
+
+
+
+
 

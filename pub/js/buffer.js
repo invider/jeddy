@@ -11,9 +11,15 @@ class Buffer {
         this.path = st.path || ''
         this.jed = null
         this.text = st.text || ''
+        this.versions = []
+        this.snap()
         this.readOnly = !!st.readOnly
 
         if (st.jed) this.bind(st.jed)
+    }
+
+    snap() {
+        this.versions.push(this.text)
     }
 
     bind(jed) {
