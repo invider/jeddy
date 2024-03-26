@@ -63,7 +63,7 @@ function switchLayout(ilayout) {
 
 function edit(text, path) {
     const jed = document.getElementById('jed')
-    bufferControl.createBuffer({
+    bufferControl.create({
         jed,
         path,
         text,
@@ -80,7 +80,7 @@ function edit(text, path) {
 
 function view(text, path) {
     const jed = document.getElementById('jed')
-    bufferControl.createBuffer({
+    bufferControl.create({
         jed,
         path,
         text,
@@ -99,7 +99,7 @@ function showHTML(text, path) {
     const jed = document.getElementById('jed')
     //jed.contentEditable = false
     //jed.innerHTML = text
-    bufferControl.createBuffer({
+    bufferControl.create({
         jed,
         path,
         text,
@@ -119,7 +119,7 @@ function showStatus(msg, timeout) {
 
 function openPath(url, path) {
     // try to find in buffers
-    if (bufferControl.openBuffer(path)) {
+    if (bufferControl.open(path)) {
         console.log(`buffered: ${url}`)
         env.path = path
         showStatus(path)
@@ -161,7 +161,7 @@ function help() {
 
 function buffers() {
     const path = '.buffers'
-    const ls = bufferControl.listBuffers()
+    const ls = bufferControl.list()
     showHTML(ls, path)
     env.path = path
     showStatus(path)
@@ -242,6 +242,16 @@ window.onkeydown = function(e) {
             case 'KeyB': buffers(); stop = true; break;
             case 'KeyM': switchTheme();  stop = true; break;
             case 'KeyL': switchLayout(); stop = true; break;
+
+            case 'Digit1': bufferControl.activateAt(0); stop = true; break;
+            case 'Digit2': bufferControl.activateAt(1); stop = true; break;
+            case 'Digit3': bufferControl.activateAt(2); stop = true; break;
+            case 'Digit4': bufferControl.activateAt(3); stop = true; break;
+            case 'Digit5': bufferControl.activateAt(4); stop = true; break;
+            case 'Digit6': bufferControl.activateAt(5); stop = true; break;
+            case 'Digit7': bufferControl.activateAt(6); stop = true; break;
+            case 'Digit8': bufferControl.activateAt(7); stop = true; break;
+            case 'Digit9': bufferControl.activateAt(8); stop = true; break;
         }
     }
 

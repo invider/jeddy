@@ -75,7 +75,7 @@ class BufferControl {
         this.currentBuffer.hibernate()
     }
 
-    createBuffer(st) {
+    create(st) {
         this.hibernateCurrent()
         const buffer = new Buffer(st)
         this.currentBuffer = buffer
@@ -86,21 +86,25 @@ class BufferControl {
         }
     }
 
-    activateBuffer(buffer) {
+    activate(buffer) {
         if (!buffer) return
         this.hibernateCurrent()
         buffer.activate()
         this.currentBuffer = buffer
     }
 
-    openBuffer(path) {
+    activateAt(index) {
+        this.activate( this.buffers[index] )
+    }
+
+    open(path) {
         const buffer = this.dir[path]
         if (!buffer) return
-        this.activateBuffer(buffer)
+        this.activate(buffer)
         return buffer
     }
 
-    listBuffers() {
+    list() {
         return this.buffers.map(buf => `<li> <a href="#${buf.path}">${buf.name}: ${buf.path}</a>`).join('\n')
     }
 
