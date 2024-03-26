@@ -3,7 +3,5 @@ web-local text editor prototype
 
 # how to use
 
-# read-only
-
 
 

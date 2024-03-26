@@ -29,7 +29,7 @@ function loadHandler(req, res, next) {
                 list.push(`<li><a href="#${filePath}">${file}</a>`)
             })
 
-            res.status(303) // See Other
+            res.status(303) // HTTP See Other - to indicate the directory listing
             res.send(list.join('\n'))
         }
 

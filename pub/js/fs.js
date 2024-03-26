@@ -10,18 +10,16 @@ export function load(url, path, handlers, readOnly) {
             return res.text()
         }).then(text => {
             if (status === 200) {
+                // 200 OK - got a file content
                 handlers.onText(path, text, readOnly)
-                //action.edit(text, path)
             } else if (status === 303) {
+                // 303 See Other - got a directory listing
                 handlers.onRaw(path, text, readOnly)
-                //action.showHTML(text, path)
             } else if (status === 404) {
-                // new file
+                // 404 Not Found - a new file to create
                 handlers.onText(path, '', readOnly)
-                //action.edit('', path)
             } else {
                 handlers.onFailure(path, text)
-                //action.showHTML(text, '!error')
             }
         })
 }
