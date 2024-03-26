@@ -1,5 +1,6 @@
 import { html2text, text2html } from './parser.js'
 import { bufferControl } from './buffer.js'
+import { load, save } from './fs.js'
 
 const themes = [
     'default',
@@ -107,6 +108,30 @@ function showStatus(msg, timeout) {
     status.innerHTML = msg
 }
 
+const saveHandlers = {
+    onSuccess: function() {
+        const buf = bufferControl.current()
+        buf.markSaved()
+        showStatus( buf.status() )
+    },
+    onFailure: function() {
+        showStatus(`Can't save !${path}`)
+    },
+}
+
+const loadHandlers = {
+    onSuccess: function(path, text) {
+        edit(text, path)
+    },
+    onList: function(path, text) {
+        showHTML(text, path)
+    },
+    onFailure: function(path, text) {
+        showHTML(text, path)
+    }
+}
+
+
 function openPath(url, path) {
     // try to find in buffers
     if (bufferControl.open(path)) {
@@ -116,25 +141,7 @@ function openPath(url, path) {
         return
     }
 
-    // load from the jeddy server
-    console.log(`loading: ${url}`)
-    let status = 0
-    fetch(url)
-        .then(res => {
-            status = res.status
-            return res.text()
-        }).then(text => {
-            if (status === 200) {
-                edit(text, path)
-            } else if (status === 303) {
-                showHTML(text, path)
-            } else if (status === 404) {
-                // new file
-                edit('', path)
-            } else {
-                showHTML(text, '!error')
-            }
-        })
+    load(url, path, loadHandlers)
 }
 
 function help() {
@@ -157,36 +164,6 @@ function list() {
     sync()
 }
 
-// TODO move to external service and accept a buffer to save
-function save(silent) {
-    const path = window.location.hash.substring(1)
-    const jed = document.getElementById('jed') // TODO get the content from the buffer
-    const txt = html2text(jed.innerHTML)
-
-    const url = 'jed/save/' + path
-    if (!silent) console.log(`saving: ${url}`)
-
-    fetch(url, {
-        method: 'post',
-        body: txt,
-    }).then(res => {
-        if (res.status === 200) {
-            const buf = bufferControl.current()
-            buf.markSaved()
-            showStatus(path)
-        } else {
-            showStatus(`Can't save !${path}`)
-        }
-        env.lastStatus = res.status
-        return res.text()
-
-    }).then(response => {
-        if (env.lastStatus !== 200) {
-            console.error(`#${env.lastStatus}: ${response}`)
-        }
-    })
-}
-
 function sync() {
     const path = window.location.hash.substring(1)
 
@@ -202,7 +179,7 @@ function check() {
 
     const passed = now - buf.getLastSave()
     if (buf.isDirty() && passed > env.autoSave * 1000) {
-        save(true)
+        save(buf, saveHandlers, true)
     }
 }
 
@@ -211,12 +188,13 @@ window.onhashchange = function() {
 }
 
 window.onkeydown = function(e) {
+    const buf = bufferControl.current()
     let stop = false
 
     if (!e.ctrlKey && !e.altKey && !e.metaKey) {
         switch(e.code) {
             case 'F1':      help(); stop = true; break;
-            case 'F2':      save(); stop = true; break;
+            case 'F2':      save(buf, saveHandlers); stop = true; break;
             case 'F3':      list(); stop = true; break;
             case 'F4':      buffers(); stop = true; break;
             case 'F10':     switchTheme();  stop = true; break;
@@ -228,7 +206,7 @@ window.onkeydown = function(e) {
     if (e.ctrlKey) {
         switch(e.code) {
             case 'KeyH': help(); stop = true; break;
-            case 'KeyS': save(); stop = true; break;
+            case 'KeyS': save(buf, saveHandlers); stop = true; break;
             case 'KeyQ': list(); stop = true; break;
             case 'KeyB': buffers(); stop = true; break;
             case 'KeyM': switchTheme();  stop = true; break;
@@ -246,7 +224,6 @@ window.onkeydown = function(e) {
         }
     }
 
-    const buf = bufferControl.current()
     if (buf && !buf.isDirty() && !e.ctrlKey && !e.altKey && !e.metaKey) {
         const jed = document.getElementById('jed')
         if (document.activeElement === jed) {

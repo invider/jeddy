@@ -28,7 +28,10 @@ class Buffer {
     }
 
     snap() {
-        this.versions.push(this.text)
+        this.versions.push({
+            time: Date.now(),
+            text: this.text,
+        })
     }
 
     bind(jed) {
@@ -40,8 +43,8 @@ class Buffer {
     hibernate() {
         if (!this.jed) throw `Can't hibernate - [${this.name}] is expected to be binded`
         if (!this.active) throw `Can't hibernate - [${this.name}] is expected to be active`
+        this.syncIn()
         this.active = false
-        this.text = html2text(this.jed.innerHTML)
     }
 
     activate() {
@@ -73,15 +76,32 @@ class Buffer {
         return this.dirty
     }
 
+    syncIn() {
+        this.text = html2text(this.jed.innerHTML)
+    }
+
     getLastSave() {
         return this.lastSave
+    }
+
+    getPath() {
+        return this.path
+    }
+
+    getText() {
+        if (this.dirty) this.syncIn()
+        return this.text
+    }
+
+    getPlainText() {
+        if (this.dirty) this.syncIn()
+        return html2text(this.text)
     }
 
     status() {
         if (this.dirty) return '*' + this.path
         else return this.path
     }
-
 }
 
 class BufferControl {
