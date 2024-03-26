@@ -64,20 +64,51 @@ function switchLayout(ilayout) {
 function edit(text, path) {
     const jed = document.getElementById('jed')
     bufferControl.createBuffer({
-        text,
-        path,
         jed,
-        readOnly: false,
+        path,
+        text,
+        attached:  true,
+        readOnly:  false,
+        plainText: true,
     })
     //jed.contentEditable = true
     //jed.innerHTML = text2html(text)
     //jed.focus()
+    env.path = path
+    showStatus(path)
+}
+
+function view(text, path) {
+    const jed = document.getElementById('jed')
+    bufferControl.createBuffer({
+        jed,
+        path,
+        text,
+        attached:  true,
+        readOnly:  true,
+        plainText: true,
+    })
+    //jed.contentEditable = true
+    //jed.innerHTML = text2html(text)
+    //jed.focus()
+    env.path = path
+    showStatus(path)
 }
 
 function showHTML(text, path) {
     const jed = document.getElementById('jed')
-    jed.contentEditable = false
-    jed.innerHTML = text
+    //jed.contentEditable = false
+    //jed.innerHTML = text
+    bufferControl.createBuffer({
+        jed,
+        path,
+        text,
+        attached:  false,
+        readOnly:  true,
+        plainText: false,
+    })
+    env.path = path
+    showStatus(path)
 }
 
 function showStatus(msg, timeout) {
@@ -86,9 +117,17 @@ function showStatus(msg, timeout) {
     status.innerHTML = msg
 }
 
-function editPath(url, path) {
-    console.log(`loading: ${url}`)
+function openPath(url, path) {
+    // try to find in buffers
+    if (bufferControl.openBuffer(path)) {
+        console.log(`buffered: ${url}`)
+        env.path = path
+        showStatus(path)
+        return
+    }
 
+    // load from the jeddy server
+    console.log(`loading: ${url}`)
     let status = 0
     fetch(url)
         .then(res => {
@@ -97,30 +136,32 @@ function editPath(url, path) {
         }).then(text => {
             if (status === 200) {
                 edit(text, path)
-                env.path = path
-                showStatus(path)
+                //env.path = path
+                //showStatus(path)
             } else if (status === 303) {
                 showHTML(text, path)
-                env.path = path
-                showStatus(path)
+                //env.path = path
+                //showStatus(path)
+            } else if (status === 404) {
+                // new file
+                edit('', path)
             } else {
-                showHTML(text)
-                env.path = ''
-                showStatus('')
+                showHTML(text, '!error')
+                //env.path = ''
+                //showStatus('')
             }
         })
 }
 
 function help() {
-    editPath('man/help.txt', '')
-    window.location.hash = '.help'
+    const path = '.help'
+    openPath('man/help.txt', path)
+    window.location.hash = path
 }
 
 function buffers() {
-    console.log('listing buffers - ' + bufferControl.buffers.length)
     const path = '.buffers'
     const ls = bufferControl.listBuffers()
-    console.log(ls)
     showHTML(ls, path)
     env.path = path
     showStatus(path)
@@ -163,7 +204,7 @@ function sync() {
 
     if (path === '.help') help()
     else if (path === '.buffers') buffers()
-    else editPath('jed/load/' + path, path)
+    else openPath('jed/load/' + path, path)
 }
 
 function check() {

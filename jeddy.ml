@@ -1,4 +1,4 @@
-> introduce stat
+ > introduce stat
 > temporary messages in the status line
 V hide status line
 > configuration text file

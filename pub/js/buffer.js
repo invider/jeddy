@@ -1,19 +1,27 @@
 import { html2text, text2html } from './parser.js'
 
 let ibuffers = 0
+let abuffers = 0
+let tbuffers = 0
 
 class Buffer {
 
     constructor(st) {
         st = st || {}
+        this.attached = !!st.attached
         this.id = ++ibuffers
-        this.name = 'Buffer' + this.id
+        if (this.attached) {
+            this.name = 'Buffer' + (++abuffers)
+        } else {
+            this.name = 'Buffer' + (++tbuffers)
+        }
         this.path = st.path || ''
         this.jed = null
         this.text = st.text || ''
         this.versions = []
         this.snap()
         this.readOnly = !!st.readOnly
+        this.plainText = !!st.plainText
 
         if (st.jed) this.bind(st.jed)
     }
@@ -25,14 +33,28 @@ class Buffer {
     bind(jed) {
         if (!jed) throw `Unable to bind [${this.name}]`
         this.jed = jed
-        this.jed.contentEditable = !this.readOnly
-        this.jed.innerHTML = text2html(this.text)
-        if (!this.readOnly) this.jed.focus()
+        this.activate()
     }
 
-    unbind() {
-        if (!this.jed) throw `Unable to unbind [${this.name}]`
+    hibernate() {
+        if (!this.jed) throw `Can't hibernate - [${this.name}] is expected to be binded`
+        if (!this.active) throw `Can't hibernate - [${this.name}] is expected to be active`
+        this.active = false
         this.text = html2text(this.jed.innerHTML)
+    }
+
+    activate() {
+        if (!this.jed) throw `Unable to unbind [${this.name}]`
+
+        this.jed.contentEditable = !this.readOnly
+        if (this.plainText) {
+            this.jed.innerHTML = text2html(this.text)
+        } else {
+            this.jed.innerHTML = this.text
+        }
+        if (!this.readOnly) this.jed.focus()
+
+        this.active = true
     }
 
     // text source change notification
@@ -48,17 +70,34 @@ class BufferControl {
         this.dir = {}
     }
 
-    unbindCurrent() {
+    hibernateCurrent() {
         if (!this.currentBuffer) return
-        this.currentBuffer.unbind()
+        this.currentBuffer.hibernate()
     }
 
     createBuffer(st) {
-        if (this.currentBuffer) this.unbindCurrent()
+        this.hibernateCurrent()
         const buffer = new Buffer(st)
         this.currentBuffer = buffer
-        this.buffers.push(buffer)
-        if (buffer.path) this.dir[buffer.path] = buffer
+
+        if (buffer.attached) {
+            this.buffers.push(buffer)
+            if (buffer.path) this.dir[buffer.path] = buffer
+        }
+    }
+
+    activateBuffer(buffer) {
+        if (!buffer) return
+        this.hibernateCurrent()
+        buffer.activate()
+        this.currentBuffer = buffer
+    }
+
+    openBuffer(path) {
+        const buffer = this.dir[path]
+        if (!buffer) return
+        this.activateBuffer(buffer)
+        return buffer
     }
 
     listBuffers() {
