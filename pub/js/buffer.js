@@ -22,6 +22,7 @@ class Buffer {
         this.snap()
         this.readOnly = !!st.readOnly
         this.plainText = !!st.plainText
+        this.lastSave = 0
 
         if (st.jed) this.bind(st.jed)
     }
@@ -59,7 +60,28 @@ class Buffer {
 
     // text source change notification
     touch() {
+        this.dirty = true
+        this.lastSave = Date.now()
     }
+
+    markSaved() {
+        this.dirty = false
+        this.lastSave = Date.now()
+    }
+
+    isDirty() {
+        return this.dirty
+    }
+
+    getLastSave() {
+        return this.lastSave
+    }
+
+    status() {
+        if (this.dirty) return '*' + this.path
+        else return this.path
+    }
+
 }
 
 class BufferControl {
@@ -84,6 +106,7 @@ class BufferControl {
             this.buffers.push(buffer)
             if (buffer.path) this.dir[buffer.path] = buffer
         }
+        return buffer
     }
 
     activate(buffer) {
@@ -106,6 +129,10 @@ class BufferControl {
 
     list() {
         return this.buffers.map(buf => `<li> <a href="#${buf.path}">${buf.name}: ${buf.path}</a>`).join('\n')
+    }
+
+    current() {
+        return this.currentBuffer
     }
 
 }

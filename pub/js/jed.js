@@ -13,8 +13,6 @@ const themes = [
 
 const env = {
     path: '',
-    dirty: false,
-    lastSave: 0,
     autoSave: 20,
     itheme:   0,
     ilayout:  0,
@@ -63,7 +61,7 @@ function switchLayout(ilayout) {
 
 function edit(text, path) {
     const jed = document.getElementById('jed')
-    bufferControl.create({
+    const buf = bufferControl.create({
         jed,
         path,
         text,
@@ -71,16 +69,13 @@ function edit(text, path) {
         readOnly:  false,
         plainText: true,
     })
-    //jed.contentEditable = true
-    //jed.innerHTML = text2html(text)
-    //jed.focus()
     env.path = path
-    showStatus(path)
+    showStatus( buf.status() )
 }
 
 function view(text, path) {
     const jed = document.getElementById('jed')
-    bufferControl.create({
+    const buf = bufferControl.create({
         jed,
         path,
         text,
@@ -88,18 +83,13 @@ function view(text, path) {
         readOnly:  true,
         plainText: true,
     })
-    //jed.contentEditable = true
-    //jed.innerHTML = text2html(text)
-    //jed.focus()
     env.path = path
-    showStatus(path)
+    showStatus( buf.status() )
 }
 
 function showHTML(text, path) {
     const jed = document.getElementById('jed')
-    //jed.contentEditable = false
-    //jed.innerHTML = text
-    bufferControl.create({
+    const buf = bufferControl.create({
         jed,
         path,
         text,
@@ -108,7 +98,7 @@ function showHTML(text, path) {
         plainText: false,
     })
     env.path = path
-    showStatus(path)
+    showStatus( buf.status() )
 }
 
 function showStatus(msg, timeout) {
@@ -136,19 +126,13 @@ function openPath(url, path) {
         }).then(text => {
             if (status === 200) {
                 edit(text, path)
-                //env.path = path
-                //showStatus(path)
             } else if (status === 303) {
                 showHTML(text, path)
-                //env.path = path
-                //showStatus(path)
             } else if (status === 404) {
                 // new file
                 edit('', path)
             } else {
                 showHTML(text, '!error')
-                //env.path = ''
-                //showStatus('')
             }
         })
 }
@@ -173,9 +157,10 @@ function list() {
     sync()
 }
 
+// TODO move to external service and accept a buffer to save
 function save(silent) {
     const path = window.location.hash.substring(1)
-    const jed = document.getElementById('jed')
+    const jed = document.getElementById('jed') // TODO get the content from the buffer
     const txt = html2text(jed.innerHTML)
 
     const url = 'jed/save/' + path
@@ -186,16 +171,19 @@ function save(silent) {
         body: txt,
     }).then(res => {
         if (res.status === 200) {
-            env.dirty = false
-            env.lastSave = Date.now()
+            const buf = bufferControl.current()
+            buf.markSaved()
             showStatus(path)
         } else {
             showStatus(`Can't save !${path}`)
         }
+        env.lastStatus = res.status
         return res.text()
 
-    }) .then(response => {
-        //console.log(response)
+    }).then(response => {
+        if (env.lastStatus !== 200) {
+            console.error(`#${env.lastStatus}: ${response}`)
+        }
     })
 }
 
@@ -209,8 +197,11 @@ function sync() {
 
 function check() {
     const now = Date.now()
-    const passed = now - env.lastSave
-    if (env.dirty && passed > env.autoSave * 1000) {
+    const buf = bufferControl.current()
+    if (!buf) return
+
+    const passed = now - buf.getLastSave()
+    if (buf.isDirty() && passed > env.autoSave * 1000) {
         save(true)
     }
 }
@@ -255,12 +246,13 @@ window.onkeydown = function(e) {
         }
     }
 
-    if (!env.dirty && !e.ctrlKey && !e.altKey && !e.metaKey) {
+    const buf = bufferControl.current()
+    if (buf && !buf.isDirty() && !e.ctrlKey && !e.altKey && !e.metaKey) {
         const jed = document.getElementById('jed')
         if (document.activeElement === jed) {
-            env.dirty = true
-            env.lastSave = Date.now()
-            showStatus(`*${env.path}`)
+            // the movement inside the jed element
+            buf.touch()
+            showStatus( buf.status() )
         }
     }
 

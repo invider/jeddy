@@ -5,90 +5,100 @@ const util = require('./util.js')
 
 const EXPRESS_PATH = '/node_modules/express/index.js'
 
-const jopen = '/jed/load*'
-const jsave = '/jed/save*'
+const openPath = '/jed/load*'
+const savePath = '/jed/save*'
 
 let env = {}
 
 function loadHandler(req, res, next) {
-    const origPath = req.path.substring(jopen.length)
+    try {
+        const origPath = req.path.substring(openPath.length)
 
-    function notFound(path) {
-        res.status(404).send(`Not Found: [${path}]`)
-    }
-
-    function listPath(path, parent) {
-        const list = []
-        if (parent) {
-            list.push(`<li><a href="#${path}/..">..</a>`)
+        function notFound(path) {
+            res.status(404).send(`Not Found: [${path}]`)
         }
 
-        fs.readdirSync(path).forEach(file => {
-            const filePath = util.joinPath(path, file)
-            list.push(`<li><a href="#${filePath}">${file}</a>`)
-        })
-
-        res.status(303) // See Other
-        res.send(list.join('\n'))
-    }
-
-    // list local folder on empty path
-    if (origPath === '') {
-        return listPath('./', false)
-    }
-
-    const path = './' + origPath
-
-    if (!fs.existsSync(path)) notFound(origPath)
-
-    const lstat = fs.lstatSync(path)
-    if (lstat.isDirectory()) {
-        console.log('listing: ' + path)
-        return listPath(path, true)
-
-    } else if (lstat.isFile()) {
-        console.log('loading: ' + path)
-        fs.readFile(path, (err, data) => {
-            if (err) {
-                console.log(err)
-                notFound(path)
-
-            } else {
-                res.type('.txt')
-                res.status(200)
-                res.send(data)
+        function listPath(path, parent) {
+            const list = []
+            if (parent) {
+                list.push(`<li><a href="#${path}/..">..</a>`)
             }
-        })
-    } else {
-        notFound(origPath)
+
+            fs.readdirSync(path).forEach(file => {
+                const filePath = util.joinPath(path, file)
+                list.push(`<li><a href="#${filePath}">${file}</a>`)
+            })
+
+            res.status(303) // See Other
+            res.send(list.join('\n'))
+        }
+
+        // list local folder on empty path
+        if (origPath === '') {
+            return listPath('./', false)
+        }
+
+        const path = './' + origPath
+
+        if (!fs.existsSync(path)) notFound(origPath)
+
+        const lstat = fs.lstatSync(path)
+        if (lstat.isDirectory()) {
+            console.log('listing: ' + path)
+            return listPath(path, true)
+
+        } else if (lstat.isFile()) {
+            console.log('loading: ' + path)
+            fs.readFile(path, (err, data) => {
+                if (err) {
+                    console.log(err)
+                    notFound(path)
+
+                } else {
+                    res.type('.txt')
+                    res.status(200)
+                    res.send(data)
+                }
+            })
+        } else {
+            notFound(origPath)
+        }
+    } catch(e) {
+        console.log(e)
     }
 }
 
 function saveHandler(req, res, next) {
-    const origPath = req.path.substring(jopen.length)
+    try { 
+        const origPath = req.path.substring(openPath.length)
 
-    // guard against empty path
-    if (origPath === '') {
-        res.status(500)
-        res.send('Unable to save - no file specified')
-        return
-    }
-
-    const path = './' + origPath
-    if (env.trace) console.log('---------------------------------------')
-    console.log('saving: ' + path)
-    if (env.trace) console.log('---------------------------------------')
-    if (env.trace) console.log(req.body.toString())
-    if (env.trace) console.log('=======================================')
-
-    fs.writeFile(path, req.body, (err) => {
-        if (err) {
-            console.log(err)
-            res.status(500).send(`Unable to save ${path}`)
-        } else {
-            res.status(200).send('Saved')
+        // guard against empty path
+        if (origPath === '') {
+            const msg = 'Unable to save - no file specified'
+            console.error(msg)
+            res.status(500)
+            res.send(msg)
+            return
         }
-    })
+
+        const path = './' + origPath
+        if (env.trace) console.log('---------------------------------------')
+        console.log('saving: ' + path)
+        if (env.trace) console.log('---------------------------------------')
+        if (env.trace) console.log(req.body.toString())
+        if (env.trace) console.log('=======================================')
+
+        fs.writeFile(path, req.body, (err) => {
+            if (err) {
+                console.log(err)
+                res.status(500).send(`Unable to save ${path}`)
+            } else {
+                res.status(200).send('Saved')
+            }
+        })
+    } catch (e) {
+        console.log(e)
+    }
 }
 
 function serve(environment) {
@@ -108,9 +118,9 @@ function serve(environment) {
 
     app.use('/', express.static(modulePath + '/pub'))
 
-    app.get(jopen, loadHandler)
+    app.get(openPath, loadHandler)
 
-    app.post(jsave, saveHandler)
+    app.post(savePath, saveHandler)
 
     app.listen(env.port, env.bind, () => console.log(`Listening at http://${env.bind}:${env.port}`))
 }
