@@ -120,10 +120,14 @@ const saveHandlers = {
 }
 
 const loadHandlers = {
-    onSuccess: function(path, text) {
-        edit(text, path)
+    onText: function(path, text, readOnly) {
+        if (readOnly) {
+            view(text, path)
+        } else {
+            edit(text, path)
+        }
     },
-    onList: function(path, text) {
+    onRaw: function(path, text, readOnly) {
         showHTML(text, path)
     },
     onFailure: function(path, text) {
@@ -131,8 +135,7 @@ const loadHandlers = {
     }
 }
 
-
-function openPath(url, path) {
+function openPath(url, path, readOnly) {
     // try to find in buffers
     if (bufferControl.open(path)) {
         console.log(`buffered: ${url}`)
@@ -141,12 +144,12 @@ function openPath(url, path) {
         return
     }
 
-    load(url, path, loadHandlers)
+    load(url, path, loadHandlers, readOnly)
 }
 
 function help() {
     const path = '.help'
-    openPath('man/help.txt', path)
+    openPath('man/help.txt', path, true)
     window.location.hash = path
 }
 

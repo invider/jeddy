@@ -1,6 +1,6 @@
 let lastStatus = 0
 
-export function load(url, path, handlers) {
+export function load(url, path, handlers, readOnly) {
     // load from the jeddy server
     console.log(`loading: ${url}`)
     let status = 0
@@ -10,14 +10,14 @@ export function load(url, path, handlers) {
             return res.text()
         }).then(text => {
             if (status === 200) {
-                handlers.onSuccess(path, text)
+                handlers.onText(path, text, readOnly)
                 //action.edit(text, path)
             } else if (status === 303) {
-                handlers.onList(path, text)
+                handlers.onRaw(path, text, readOnly)
                 //action.showHTML(text, path)
             } else if (status === 404) {
                 // new file
-                handlers.onSuccess(path, '')
+                handlers.onText(path, '', readOnly)
                 //action.edit('', path)
             } else {
                 handlers.onFailure(path, text)
@@ -32,6 +32,10 @@ export function save(buffer, handlers, silent) {
     //const jed = document.getElementById('jed') // TODO get the content from the buffer
     //const txt = html2text(jed.innerHTML)
     if (!buffer) return
+    if (buffer.readOnly) {
+        if (!silent) console.log(`ignoring save for read-only [${buffer.path}]`)
+        return
+    }
     const path = buffer.getPath()
     const txt = buffer.getText()
 

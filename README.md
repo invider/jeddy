@@ -3,5 +3,7 @@ web-local text editor prototype
 
 # how to use
 
-# more
+# read-only
+
+
 
