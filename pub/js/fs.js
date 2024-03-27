@@ -30,6 +30,7 @@ export function save(buffer, handlers, silent) {
     //const jed = document.getElementById('jed') // TODO get the content from the buffer
     //const txt = html2text(jed.innerHTML)
     if (!buffer) return
+    if (!buffer.attached) return
     if (buffer.readOnly) {
         if (!silent) console.log(`ignoring save for read-only [${buffer.path}]`)
         return

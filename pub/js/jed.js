@@ -17,6 +17,7 @@ const env = {
     autoSave: 20,
     itheme:   0,
     ilayout:  0,
+    key: {},
 }
 window.env = env
 
@@ -169,6 +170,11 @@ function list() {
 
 function sync() {
     const path = window.location.hash.substring(1)
+    const curBuffer = bufferControl.current()
+    if (curBuffer && curBuffer.path === path) {
+        console.log('already there')
+        return // already here
+    }
 
     if (path === '.help') help()
     else if (path === '.buffers') buffers()
@@ -194,6 +200,16 @@ window.onkeydown = function(e) {
     const buf = bufferControl.current()
     let stop = false
 
+    // control flags
+    switch(e.code) {
+        case 'ControlLeft':  env.key.lctrl = true; break;
+        case 'ControlRight': env.key.rctrl = true; break;
+        case 'AltLeft':      env.key.lalt  = true; break;
+        case 'AltRight':     env.key.ralt  = true; break;
+        case 'MetaLeft':     env.key.lmeta = true; break;
+        case 'MetaRight':    env.key.rmeta = true; break;
+    }
+
     if (!e.ctrlKey && !e.altKey && !e.metaKey) {
         switch(e.code) {
             case 'F1':      help(); stop = true; break;
@@ -214,7 +230,11 @@ window.onkeydown = function(e) {
             case 'KeyB': buffers(); stop = true; break;
             case 'KeyM': switchTheme();  stop = true; break;
             case 'KeyL': switchLayout(); stop = true; break;
+        }
+    }
 
+    if (env.key.lctrl) {
+        switch(e.code) {
             case 'Digit1': bufferControl.activateAt(0); stop = true; break;
             case 'Digit2': bufferControl.activateAt(1); stop = true; break;
             case 'Digit3': bufferControl.activateAt(2); stop = true; break;
@@ -224,6 +244,20 @@ window.onkeydown = function(e) {
             case 'Digit7': bufferControl.activateAt(6); stop = true; break;
             case 'Digit8': bufferControl.activateAt(7); stop = true; break;
             case 'Digit9': bufferControl.activateAt(8); stop = true; break;
+        }
+    }
+
+    if (env.key.rctrl) {
+        switch(e.code) {
+            case 'Digit1': bufferControl.snapAt(0); stop = true; break;
+            case 'Digit2': bufferControl.snapAt(1); stop = true; break;
+            case 'Digit3': bufferControl.snapAt(2); stop = true; break;
+            case 'Digit4': bufferControl.snapAt(3); stop = true; break;
+            case 'Digit5': bufferControl.snapAt(4); stop = true; break;
+            case 'Digit6': bufferControl.snapAt(5); stop = true; break;
+            case 'Digit7': bufferControl.snapAt(6); stop = true; break;
+            case 'Digit8': bufferControl.snapAt(7); stop = true; break;
+            case 'Digit9': bufferControl.snapAt(8); stop = true; break;
         }
     }
 
@@ -242,8 +276,22 @@ window.onkeydown = function(e) {
     }
 }
 
+window.onkeyup = function(e) {
+    // control flags
+    switch(e.code) {
+        case 'ControlLeft':  env.key.lctrl = false; break;
+        case 'ControlRight': env.key.rctrl = false; break;
+        case 'AltLeft':      env.key.lalt  = false; break;
+        case 'AltRight':     env.key.ralt  = false; break;
+        case 'MetaLeft':     env.key.lmeta = false; break;
+        case 'MetaRight':    env.key.rmeta = false; break;
+    }
+}
+
 window.onload = function() {
-    sync()
+    const jed = document.getElementById('jed')
+    jed.onblur = () => focus() // stay always in focus
+    bufferControl.bind(jed)
 
     // determine the theme if stored
     const themeStr = localStorage.getItem('theme')
@@ -253,9 +301,7 @@ window.onload = function() {
     const layoutStr = localStorage.getItem('layout')
     if (layoutStr) switchLayout(parseInt(layoutStr))
 
-
-    const jed = document.getElementById('jed')
-    jed.onblur = () => focus() // stay always in focus
+    sync()
 
     setInterval(check, 1000)
 }

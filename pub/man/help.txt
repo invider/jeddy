@@ -12,7 +12,10 @@ F3  or Ctrl+Q - list files in the work folder
 F4  or Ctrl+B - list active buffers
 F10 or Ctrl+M - switch the mood
 F11 or Ctrl+L - switch the layout
-Ctrl+# - access a selected buffer from #1 to #9
+LCtrl+# - access a selected buffer from #1 to #9
+RCtrl+# - access a selected snap from #1 to #9
+Alt + Left - back to the previous file in history
+Alt + Right - forward to the next file in history
 
 -- text manipulation --
 Arrow Keys - move the cursor
@@ -52,12 +55,4 @@ You can open a file directly by providing it's relative path in the URL string, 
     localhost:9101/#.data.txt
 
 Opens work-folder/data.txt.
-
-
-
-
-
-
-
-
 

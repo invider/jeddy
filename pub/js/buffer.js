@@ -8,6 +8,7 @@ class Buffer {
 
     constructor(st) {
         st = st || {}
+        this.control = null
         this.attached = !!st.attached
         this.id = ++ibuffers
         if (this.attached) {
@@ -16,15 +17,12 @@ class Buffer {
             this.name = 'Buffer' + (++tbuffers)
         }
         this.path = st.path || ''
-        this.jed = null
         this.text = st.text || ''
         this.versions = []
         this.snap()
         this.readOnly = !!st.readOnly
         this.plainText = !!st.plainText
         this.lastSave = 0
-
-        if (st.jed) this.bind(st.jed)
     }
 
     snap() {
@@ -34,31 +32,32 @@ class Buffer {
         })
     }
 
-    bind(jed) {
-        if (!jed) throw `Unable to bind [${this.name}]`
-        this.jed = jed
-        this.activate()
+    bind(control) {
+        if (!control) throw `Unable to bind [${this.name}]`
+        this.control = control
     }
 
     hibernate() {
-        if (!this.jed) throw `Can't hibernate - [${this.name}] is expected to be binded`
+        if (!this.control) throw `Can't hibernate - [${this.name}] is expected to be binded`
         if (!this.active) throw `Can't hibernate - [${this.name}] is expected to be active`
         this.syncIn()
         this.active = false
     }
 
     activate() {
-        if (!this.jed) throw `Unable to unbind [${this.name}]`
+        if (!this.control) throw `Unable to activate [${this.name}] - no control binded`
 
-        this.jed.contentEditable = !this.readOnly
+        const jed = this.control.jed
+        jed.contentEditable = !this.readOnly
         if (this.plainText) {
-            this.jed.innerHTML = text2html(this.text)
+            jed.innerHTML = text2html(this.text)
         } else {
-            this.jed.innerHTML = this.text
+            jed.innerHTML = this.text
         }
-        if (!this.readOnly) this.jed.focus()
+        if (!this.readOnly) jed.focus()
 
         this.active = true
+        window.location.hash = this.path
     }
 
     // text source change notification
@@ -77,7 +76,8 @@ class Buffer {
     }
 
     syncIn() {
-        this.text = html2text(this.jed.innerHTML)
+        if (!this.control) throw `Can't hibernate - [${this.name}] is expected to be binded`
+        this.text = html2text(this.control.jed.innerHTML)
     }
 
     getLastSave() {
@@ -104,12 +104,28 @@ class Buffer {
     }
 }
 
-class BufferControl {
+export class BufferControl {
 
     constructor() {
         this.currentBuffer = null
         this.buffers = []
+        this.snaps = []
+        for (let i = 0; i < 10; i++) {
+            const buffer = new Buffer({
+                path: '.snap' + (i + 1),
+                text: '',
+                attached:  false,
+                readOnly:  false,
+                plainText: true,
+            })
+            buffer.bind(this)
+            this.snaps[i] = buffer
+        }
         this.dir = {}
+    }
+
+    bind(jed) {
+        this.jed = jed
     }
 
     hibernateCurrent() {
@@ -120,6 +136,8 @@ class BufferControl {
     create(st) {
         this.hibernateCurrent()
         const buffer = new Buffer(st)
+        buffer.bind(this)
+        buffer.activate()
         this.currentBuffer = buffer
 
         if (buffer.attached) {
@@ -140,6 +158,10 @@ class BufferControl {
         this.activate( this.buffers[index] )
     }
 
+    snapAt(index) {
+        this.activate( this.snaps[index] )
+    }
+
     open(path) {
         const buffer = this.dir[path]
         if (!buffer) return
@@ -158,3 +180,4 @@ class BufferControl {
 }
 
 export const bufferControl = new BufferControl()
+
