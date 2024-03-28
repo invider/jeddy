@@ -47,7 +47,7 @@ export function save(buffer, handlers, silent) {
     }).then(res => {
         if (res.status === 200) {
             if (handlers && handlers.onSuccess) {
-                handlers.onSuccess()
+                handlers.onSuccess(buffer)
             }
             /*
             const buf = bufferControl.current()
@@ -56,7 +56,7 @@ export function save(buffer, handlers, silent) {
             */
         } else {
             if (handlers && handlers.onFailure) {
-                handlers.onFailure()
+                handlers.onFailure(buffer)
             }
             //action.showStatus(`Can't save !${path}`)
         }
@@ -68,4 +68,8 @@ export function save(buffer, handlers, silent) {
             console.error(`#${lastStatus}: ${response}`)
         }
     })
+}
+
+export function saveSilent(buffer, handlers) {
+    return save(buffer, handlers, true)
 }

@@ -1,6 +1,6 @@
 import { html2text, text2html } from './parser.js'
 import { bufferControl } from './buffer.js'
-import { load, save } from './fs.js'
+import { load, save, saveSilent } from './fs.js'
 
 const themes = [
     'default',
@@ -110,13 +110,12 @@ function showStatus(msg, timeout) {
 }
 
 const saveHandlers = {
-    onSuccess: function() {
-        const buf = bufferControl.current()
-        buf.markSaved()
-        showStatus( buf.status() )
+    onSuccess: function(buffer) {
+        buffer.markSaved()
+        if (buffer.active) showStatus( buffer.status() )
     },
-    onFailure: function() {
-        showStatus(`Can't save !${path}`)
+    onFailure: function(buffer) {
+        if (buffer.active) showStatus(`Can't save [${buffer.title()}]`)
     },
 }
 
@@ -171,25 +170,27 @@ function list() {
 function sync() {
     const path = window.location.hash.substring(1)
     const curBuffer = bufferControl.current()
-    if (curBuffer && curBuffer.path === path) {
-        console.log('already there')
-        return // already here
-    }
+    if (curBuffer && curBuffer.path === path) return // already selected
 
     if (path === '.help') help()
     else if (path === '.buffers') buffers()
     else openPath('jed/load/' + path, path)
 }
 
-function check() {
-    const now = Date.now()
+function dirtyCheck() {
+    const before = Date.now() - (env.autoSave * 1000)
+    bufferControl.dirtyBefore(before).forEach(buf => {
+        saveSilent(buf, saveHandlers)
+    })
+    /*
     const buf = bufferControl.current()
     if (!buf) return
 
     const passed = now - buf.getLastSave()
     if (buf.isDirty() && passed > env.autoSave * 1000) {
-        save(buf, saveHandlers, true)
+        saveSilent(buf, saveHandlers)
     }
+    */
 }
 
 window.onhashchange = function() {
@@ -224,12 +225,14 @@ window.onkeydown = function(e) {
 
     if (e.ctrlKey) {
         switch(e.code) {
+            case 'Backquote': list(); stop = true; break;
             case 'KeyH': help(); stop = true; break;
             case 'KeyS': save(buf, saveHandlers); stop = true; break;
             case 'KeyQ': list(); stop = true; break;
             case 'KeyB': buffers(); stop = true; break;
             case 'KeyM': switchTheme();  stop = true; break;
             case 'KeyL': switchLayout(); stop = true; break;
+            case 'Digit0': buffers(); stop = true; break;
         }
     }
 
@@ -303,5 +306,5 @@ window.onload = function() {
 
     sync()
 
-    setInterval(check, 1000)
+    setInterval(dirtyCheck, 1000)
 }

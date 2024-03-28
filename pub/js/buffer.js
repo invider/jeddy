@@ -23,6 +23,8 @@ class Buffer {
         this.readOnly = !!st.readOnly
         this.plainText = !!st.plainText
         this.lastSave = 0
+        this.dirty = false
+        this.outOfSync = false
     }
 
     snap() {
@@ -62,8 +64,11 @@ class Buffer {
 
     // text source change notification
     touch() {
-        this.dirty = true
-        this.lastSave = Date.now()
+        if (!this.dirty) {
+            this.dirty = true
+            this.outOfSync = true
+            this.lastSave = Date.now()
+        }
     }
 
     markSaved() {
@@ -75,9 +80,15 @@ class Buffer {
         return this.dirty
     }
 
+    isAttached() {
+        return this.attached 
+    }
+
     syncIn() {
-        if (!this.control) throw `Can't hibernate - [${this.name}] is expected to be binded`
+        if (!this.control) throw `Can't sync in - [${this.name}] is expected to be binded`
+        if (!this.active) throw `Can't sync in - [${this.name}] is hibernated`
         this.text = html2text(this.control.jed.innerHTML)
+        this.outOfSync = false
     }
 
     getLastSave() {
@@ -89,7 +100,7 @@ class Buffer {
     }
 
     getText() {
-        if (this.dirty) this.syncIn()
+        if (this.active && this.outOfSync) this.syncIn()
         return this.text
     }
 
@@ -101,6 +112,10 @@ class Buffer {
     status() {
         if (this.dirty) return '*' + this.path
         else return this.path
+    }
+
+    title() {
+        return this.path
     }
 }
 
@@ -175,6 +190,10 @@ export class BufferControl {
 
     current() {
         return this.currentBuffer
+    }
+
+    dirtyBefore(before) {
+        return this.buffers.filter(buf => buf.isAttached() && buf.isDirty() && buf.getLastSave() < before)
     }
 
 }
