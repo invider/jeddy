@@ -26,6 +26,17 @@ function focus() {
     jed.focus()
 }
 
+function onChange() {
+    const jed = document.getElementById('jed')
+    if (document.activeElement !== jed) return
+
+    const buf = bufferControl.current()
+    if (!buf) return
+
+    buf.touch()
+    showStatus( buf.status() )
+}
+
 function switchTheme(itheme) {
     if (itheme === undefined) {
         itheme = (env.itheme || 0) + 1
@@ -150,7 +161,7 @@ function openPath(url, path, readOnly) {
 function help() {
     const path = '.help'
     openPath('man/help.txt', path, true)
-    window.location.hash = path
+    //window.location.hash = path
 }
 
 function buffers() {
@@ -182,15 +193,6 @@ function dirtyCheck() {
     bufferControl.dirtyBefore(before).forEach(buf => {
         saveSilent(buf, saveHandlers)
     })
-    /*
-    const buf = bufferControl.current()
-    if (!buf) return
-
-    const passed = now - buf.getLastSave()
-    if (buf.isDirty() && passed > env.autoSave * 1000) {
-        saveSilent(buf, saveHandlers)
-    }
-    */
 }
 
 window.onhashchange = function() {
@@ -264,15 +266,6 @@ window.onkeydown = function(e) {
         }
     }
 
-    if (buf && !buf.isDirty() && !e.ctrlKey && !e.altKey && !e.metaKey) {
-        const jed = document.getElementById('jed')
-        if (document.activeElement === jed) {
-            // the movement inside the jed element
-            buf.touch()
-            showStatus( buf.status() )
-        }
-    }
-
     if (stop) {
         e.preventDefault()
         e.stopPropagation()
@@ -294,6 +287,28 @@ window.onkeyup = function(e) {
 window.onload = function() {
     const jed = document.getElementById('jed')
     jed.onblur = () => focus() // stay always in focus
+    jed.oncut    = onChange
+    jed.onpaste  = onChange
+    jed.ondelete = onChange
+    jed.mouseup  = onChange
+    jed.onkeyup  = function(e) {
+        // no change escape cases
+        if (e.ctrlKey || e.metaKey || e.altKey) return
+        switch(e.code) {
+            case 'F1': case 'F2': case 'F3': case 'F4': case 'F5': case 'F6':
+            case 'F7': case 'F8': case 'F9': case 'F10': case 'F11': case 'F12': case 'F13':
+            case 'ArrowUp': case 'ArrowLeft': case 'ArrowDown': case 'ArrowRight':
+            case 'Home': case 'End': case 'PageUp': case 'PageDown':
+            case 'CapsLock': case 'ScrollLock': case 'NumLock':
+            case 'ShiftLeft': case 'ShiftRight':
+            case 'CtrlLeft': case 'CtrlRight': case 'AltLeft': case 'AltRight':
+            case 'MetaLeft': case 'MetaRight': case 'ContextMenu':
+            case 'Insert': case 'Pause':
+            case 'Escape':
+                return
+        }
+        onChange()
+    }
     bufferControl.bind(jed)
 
     // determine the theme if stored

@@ -155,7 +155,7 @@ export class BufferControl {
         buffer.activate()
         this.currentBuffer = buffer
 
-        if (buffer.attached) {
+        if (buffer.attached && !buffer.readOnly) {
             this.buffers.push(buffer)
             if (buffer.path) this.dir[buffer.path] = buffer
         }
