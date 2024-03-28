@@ -34,7 +34,7 @@ function onChange() {
     if (!buf) return
 
     buf.touch()
-    showStatus( buf.status() )
+    showCurBufferStatus()
 }
 
 function switchTheme(itheme) {
@@ -83,7 +83,7 @@ function edit(text, path) {
         plainText: true,
     })
     env.path = path
-    showStatus( buf.status() )
+    showCurBufferStatus()
 }
 
 function view(text, path) {
@@ -97,7 +97,7 @@ function view(text, path) {
         plainText: true,
     })
     env.path = path
-    showStatus( buf.status() )
+    showCurBufferStatus()
 }
 
 function showHTML(text, path) {
@@ -111,7 +111,7 @@ function showHTML(text, path) {
         plainText: false,
     })
     env.path = path
-    showStatus( buf.status() )
+    showCurBufferStatus()
 }
 
 function showStatus(msg, timeout) {
@@ -120,10 +120,18 @@ function showStatus(msg, timeout) {
     status.innerHTML = msg
 }
 
+function showCurBufferStatus() {
+    const cbuf = bufferControl.current()
+    if (cbuf) {
+        bufferControl.hintDirty()
+        showStatus( cbuf.status() )
+    }
+}
+
 const saveHandlers = {
     onSuccess: function(buffer) {
         buffer.markSaved()
-        if (buffer.active) showStatus( buffer.status() )
+        if (buffer.active) showCurBufferStatus()
     },
     onFailure: function(buffer) {
         if (buffer.active) showStatus(`Can't save [${buffer.title()}]`)
@@ -151,7 +159,7 @@ function openPath(url, path, readOnly) {
     if (bufferControl.open(path)) {
         console.log(`buffered: ${url}`)
         env.path = path
-        showStatus(path)
+        showCurBufferStatus()
         return
     }
 
@@ -169,7 +177,7 @@ function buffers() {
     const ls = bufferControl.list()
     showHTML(ls, path)
     env.path = path
-    showStatus(path)
+    showCurBufferStatus()
     window.location.hash = path
 }
 
@@ -301,7 +309,7 @@ window.onload = function() {
             case 'Home': case 'End': case 'PageUp': case 'PageDown':
             case 'CapsLock': case 'ScrollLock': case 'NumLock':
             case 'ShiftLeft': case 'ShiftRight':
-            case 'CtrlLeft': case 'CtrlRight': case 'AltLeft': case 'AltRight':
+            case 'ControlLeft': case 'ControlRight': case 'AltLeft': case 'AltRight':
             case 'MetaLeft': case 'MetaRight': case 'ContextMenu':
             case 'Insert': case 'Pause':
             case 'Escape':

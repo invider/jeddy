@@ -196,6 +196,17 @@ export class BufferControl {
         return this.buffers.filter(buf => buf.isAttached() && buf.isDirty() && buf.getLastSave() < before)
     }
 
+    hintDirty() {
+        if (!this.jed) return 
+        const cbuf = this.currentBuffer
+        if (!cbuf) return
+
+        if (cbuf.isDirty()) {
+            document.documentElement.style.setProperty('--frame-width', '3px')
+        } else {
+            document.documentElement.style.setProperty('--frame-width', '2px')
+        }
+    }
 }
 
 export const bufferControl = new BufferControl()

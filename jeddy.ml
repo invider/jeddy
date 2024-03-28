@@ -1,6 +1,4 @@
 > introduce distinction between root and base directories
-V save all dirty buffers, not only the current one
-> mark dirty only on actual changes and not arrow move
 > normalize RESTful paths
 > separate URL space for help, buffers and stat
 > introduce stat
@@ -20,6 +18,8 @@ V save all dirty buffers, not only the current one
 > how to use in Readme
 > come up with unique and descriptive name
 > publish on npm
+V save all dirty buffers, not only the current one
+V mark dirty only on actual changes and not arrow move
 V snap buffers
 V save new buffer
 V readonly buffers
