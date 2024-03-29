@@ -193,7 +193,7 @@ function sync() {
 
     if (path === '.help') help()
     else if (path === '.buffers') buffers()
-    else openPath('jed/load/' + path, path)
+    else openPath('workspace/' + path, path)
 }
 
 function dirtyCheck() {

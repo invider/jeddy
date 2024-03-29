@@ -38,7 +38,7 @@ export function save(buffer, handlers, silent) {
     const path = buffer.getPath()
     const txt = buffer.getText()
 
-    const url = 'jed/save/' + path
+    const url = 'workspace/' + path
     if (!silent) console.log(`saving: ${url}`)
 
     fetch(url, {

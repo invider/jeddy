@@ -5,14 +5,13 @@ const util = require('./util.js')
 
 const EXPRESS_PATH = '/node_modules/express/index.js'
 
-const openPath = '/jed/load*'
-const savePath = '/jed/save*'
+const workspacePath = '/workspace*'
 
 let env = {}
 
 function loadHandler(req, res, next) {
     try {
-        const origPath = req.path.substring(openPath.length)
+        const origPath = req.path.substring(workspacePath.length)
 
         function notFound(path) {
             res.status(404).send(`Not Found: [${path}]`)
@@ -70,7 +69,7 @@ function loadHandler(req, res, next) {
 
 function saveHandler(req, res, next) {
     try { 
-        const origPath = req.path.substring(openPath.length)
+        const origPath = req.path.substring(workspacePath.length)
 
         // guard against empty path
         if (origPath === '') {
@@ -116,11 +115,12 @@ function serve(environment) {
     console.log(`Working Dir: ${env.editPath}`)
     if (env.debug) console.log(`Jeddy Base: ${env.jeddyBase}`)
 
+    // host static from /pub
     app.use('/', express.static(modulePath + '/pub'))
 
-    app.get(openPath, loadHandler)
+    app.get(workspacePath, loadHandler)
 
-    app.post(savePath, saveHandler)
+    app.post(workspacePath, saveHandler)
 
     app.listen(env.port, env.bind, () => console.log(`Listening at http://${env.bind}:${env.port}`))
 }
