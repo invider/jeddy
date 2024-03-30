@@ -36,6 +36,10 @@ export function save(buffer, handlers, silent) {
         return
     }
     const path = buffer.getPath()
+    if (!path || path.startsWith('!')) {
+        if (!silent) console.log(`ignoring save for the special path: [${path}]`)
+        return
+    }
     const txt = buffer.getText()
 
     const url = 'workspace/' + path

@@ -167,13 +167,13 @@ function openPath(url, path, readOnly) {
 }
 
 function help() {
-    const path = '.help'
+    const path = '!help'
     openPath('man/help.txt', path, true)
     //window.location.hash = path
 }
 
 function buffers() {
-    const path = '.buffers'
+    const path = '!buffers'
     const ls = bufferControl.list()
     showHTML(ls, path)
     env.path = path
@@ -191,8 +191,8 @@ function sync() {
     const curBuffer = bufferControl.current()
     if (curBuffer && curBuffer.path === path) return // already selected
 
-    if (path === '.help') help()
-    else if (path === '.buffers') buffers()
+    if (path === '!help') help()
+    else if (path === '!buffers') buffers()
     else openPath('workspace/' + path, path)
 }
 

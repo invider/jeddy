@@ -1,5 +1,4 @@
 > introduce distinction between root and base directories
-> normalize RESTful paths
 > separate URL space for help, buffers and stat
 > introduce stat
 > buffer history browser
@@ -18,6 +17,7 @@
 > how to use in Readme
 > come up with unique and descriptive name
 > publish on npm
+V normalize RESTful paths
 V save all dirty buffers, not only the current one
 V mark dirty only on actual changes and not arrow move
 V snap buffers
