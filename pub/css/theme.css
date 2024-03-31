@@ -3,12 +3,14 @@
     --font-size:        24;
     --jed-width:        55%; 
     
-    --border-color:     #808080;
-    --background-color: #fafac8;
-    --primary-color:    #222222;
-    --frame-color:      orange;
-    --frame-width:      2px;
-    --selection:        #E0E0B0;
+    --border-color:      #808080;
+    --background-color:  #fafac8;
+    --primary-color:     #222222;
+    --frame-color:       orange;
+    --frame-width:       1px;
+    --frame-width-clean: 1px;
+    --frame-width-dirty: 3px;
+    --selection:         #E0E0B0;
 
     --link-color:       blue;
     --visited-color:    purple;

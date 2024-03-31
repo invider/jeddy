@@ -202,9 +202,11 @@ export class BufferControl {
         if (!cbuf) return
 
         if (cbuf.isDirty()) {
-            document.documentElement.style.setProperty('--frame-width', '3px')
+            const width = document.documentElement.style.getPropertyValue('--frame-width-dirty') || '3px'
+            document.documentElement.style.setProperty('--frame-width', width)
         } else {
-            document.documentElement.style.setProperty('--frame-width', '2px')
+            const width = document.documentElement.style.getPropertyValue('--frame-width-clean') || '1px'
+            document.documentElement.style.setProperty('--frame-width', width)
         }
     }
 }
