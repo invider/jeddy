@@ -10,6 +10,7 @@ F1  or Ctrl+H - show help
 F2  or Ctrl+S - save the file.
 F3  or Ctrl+Q - list files in the work folder
 F4  or Ctrl+B - list active buffers
+F9 or Ctrl+Backslash - show the stat
 F10 or Ctrl+M - switch the mood
 F11 or Ctrl+L - switch the layout
 LCtrl+# - access a selected buffer from #1 to #9
@@ -55,4 +56,5 @@ You can open a file directly by providing it's relative path in the URL string, 
     localhost:9101/#.data.txt
 
 Opens work-folder/data.txt.
+
 

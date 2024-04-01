@@ -184,7 +184,7 @@ export class BufferControl {
         return buffer
     }
 
-    list() {
+    htmlList() {
         return this.buffers.map(buf => `<li> <a href="#${buf.path}">${buf.name}: ${buf.path}</a>`).join('\n')
     }
 

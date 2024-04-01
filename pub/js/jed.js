@@ -1,6 +1,7 @@
 import { html2text, text2html } from './parser.js'
-import { bufferControl } from './buffer.js'
 import { load, save, saveSilent } from './fs.js'
+import { bufferControl } from './buffer.js'
+import { stat } from './stat.js'
 
 const themes = [
     'default',
@@ -166,16 +167,25 @@ function openPath(url, path, readOnly) {
     load(url, path, loadHandlers, readOnly)
 }
 
-function help() {
+function showHelp() {
     const path = '!help'
     openPath('man/help.txt', path, true)
     //window.location.hash = path
 }
 
-function buffers() {
+function showBuffers() {
     const path = '!buffers'
-    const ls = bufferControl.list()
-    showHTML(ls, path)
+    const htmlList = bufferControl.htmlList()
+    showHTML(htmlList, path)
+    env.path = path
+    showCurBufferStatus()
+    window.location.hash = path
+}
+
+function showStat() {
+    const path = '!stat'
+    const html = stat.renderHTML()
+    showHTML(html, path)
     env.path = path
     showCurBufferStatus()
     window.location.hash = path
@@ -191,9 +201,21 @@ function sync() {
     const curBuffer = bufferControl.current()
     if (curBuffer && curBuffer.path === path) return // already selected
 
-    if (path === '!help') help()
-    else if (path === '!buffers') buffers()
-    else openPath('workspace/' + path, path)
+    if (path.startsWith('!')) {
+        switch(path) {
+            case '!help':
+                showHelp()
+                break
+            case '!buffers':
+                showBuffers()
+                break
+            case '!stat':
+                showStat()
+                break
+        }
+    } else {
+        openPath('workspace/' + path, path)
+    }
 }
 
 function dirtyCheck() {
@@ -223,26 +245,29 @@ window.onkeydown = function(e) {
 
     if (!e.ctrlKey && !e.altKey && !e.metaKey) {
         switch(e.code) {
-            case 'F1':      help(); stop = true; break;
-            case 'F2':      save(buf, saveHandlers); stop = true; break;
-            case 'F3':      list(); stop = true; break;
-            case 'F4':      buffers(); stop = true; break;
-            case 'F10':     switchTheme();  stop = true; break;
-            case 'F11':     switchLayout(); stop = true; break;
-            case 'Escape':  focus(); stop = true; break;
+            case 'F1':      showHelp();                 stop = true; break;
+            case 'F2':      save(buf, saveHandlers);    stop = true; break;
+            case 'F3':      list();                     stop = true; break;
+            case 'F4':      showBuffers();              stop = true; break;
+            case 'F9':      showStat();                 stop = true; break;
+            case 'F10':     switchTheme();              stop = true; break;
+            case 'F11':     switchLayout();             stop = true; break;
+            case 'Escape':  focus();                    stop = true; break;
         }
     }
 
     if (e.ctrlKey) {
         switch(e.code) {
-            case 'Backquote': list(); stop = true; break;
-            case 'KeyH': help(); stop = true; break;
-            case 'KeyS': save(buf, saveHandlers); stop = true; break;
-            case 'KeyQ': list(); stop = true; break;
-            case 'KeyB': buffers(); stop = true; break;
-            case 'KeyM': switchTheme();  stop = true; break;
-            case 'KeyL': switchLayout(); stop = true; break;
-            case 'Digit0': buffers(); stop = true; break;
+            case 'Backquote': list();               stop = true; break;
+            case 'KeyH': showHelp();                stop = true; break;
+            case 'KeyS': save(buf, saveHandlers);   stop = true; break;
+            case 'KeyQ': list();                    stop = true; break;
+            case 'KeyB': buffers();                 stop = true; break;
+            case 'KeyM': switchTheme();             stop = true; break;
+            case 'KeyN':                            stop = true; break; // prevent new tab
+            case 'KeyL': switchLayout();            stop = true; break;
+            case 'Backslash': showStat();           stop = true; break;
+            case 'Digit0': showBuffers();           stop = true; break;
         }
     }
 
@@ -274,9 +299,12 @@ window.onkeydown = function(e) {
         }
     }
 
+
     if (stop) {
         e.preventDefault()
         e.stopPropagation()
+    } else {
+        stat.keyStroke(e)
     }
 }
 
