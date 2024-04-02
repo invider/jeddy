@@ -256,6 +256,7 @@ window.onkeydown = function(e) {
         }
     }
 
+    console.dir(e)
     if (e.ctrlKey) {
         switch(e.code) {
             case 'Backquote': list();               stop = true; break;
@@ -264,7 +265,7 @@ window.onkeydown = function(e) {
             case 'KeyQ': list();                    stop = true; break;
             case 'KeyB': buffers();                 stop = true; break;
             case 'KeyM': switchTheme();             stop = true; break;
-            case 'KeyN':                            stop = true; break; // prevent new tab
+            case 'KeyN': console.log('ups'); stop = true; break; // prevent new tab
             case 'KeyL': switchLayout();            stop = true; break;
             case 'Backslash': showStat();           stop = true; break;
             case 'Digit0': showBuffers();           stop = true; break;

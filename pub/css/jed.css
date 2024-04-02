@@ -4,6 +4,36 @@
 }
 
 @font-face {
+    font-family: PixelOperatorMono;
+    src: url(../fnt/PixelOperatorMono.ttf);
+}
+
+@font-face {
+    font-family: iAWriterDuospace;
+    src: url(../fnt/iAWriterDuospace-Regular.otf);
+}
+
+@font-face {
+    font-family: LibreBaskerville-Regular;
+    src: url(../fnt/LibreBaskerville-Regular.otf);
+}
+
+@font-face {
+    font-family: monof55;
+    src: url(../fnt/monof55.ttf);
+}
+
+@font-face {
+    font-family: SHPinscher-Regular;
+    src: url(../fnt/SHPinscher-Regular.otf);
+}
+
+@font-face {
+    font-family: UnderwoodChampion;
+    src: url(../fnt/underwood_champion.ttf);
+}
+
+@font-face {
     font-family: "EB Garamond", serif;
     font-optical-sizing: auto;
     font-weight: 400;

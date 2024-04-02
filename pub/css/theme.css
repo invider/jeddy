@@ -1,5 +1,5 @@
 :root {
-    --primary-font:     'Merriweather', serif;
+    --primary-font:     'iAWriterDuospace', serif;
     --font-size:        24;
     --jed-width:        55%; 
     
@@ -27,7 +27,7 @@
 }
 
 [data-theme="solar"] {
-    --primary-font:     'PixelOperator', serif;
+    --primary-font:     'PixelOperatorMono', serif;
     --font-size:        24;
     --jed-width:        55%; 
 
@@ -42,6 +42,7 @@
 }
 
 [data-theme="eclipse"] {
+    --primary-font:     'PixelOperatorMono', serif;
     --font-size:        24;
     --jed-width:        55%; 
 
@@ -81,7 +82,7 @@
 }
 
 [data-theme="amber-term"] {
-    --primary-font:     'PixelOperator', serif;
+    --primary-font:     'monof55', serif;
     --font-size:        24;
     --jed-width:        55%; 
 
@@ -105,8 +106,8 @@
 }
 
 [data-theme="green-term"] {
-    --primary-font:     'PixelOperator', serif;
-    --font-size:        24;
+    --primary-font:     'SHPinscher-Regular', serif;
+    --font-size:        28;
     --jed-width:        55%; 
 
     --border-color:     #020500;
@@ -126,8 +127,8 @@
 }
 
 [data-theme="e-ink"] {
-    --primary-font:     'EB Garamond', serif;
-    --font-size:        32;
+    --primary-font:     'UnderwoodChampion', serif;
+    --font-size:        24;
     --jed-width:        100%; 
 
     --border-color:     #FFFFFF;
