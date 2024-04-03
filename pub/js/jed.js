@@ -13,11 +13,22 @@ const themes = [
     'e-ink',
 ]
 
+const fonts = [
+    'PixelOperator',
+    'PixelOperatorMono',
+    'iAWriterDuospace',
+    'LibreBaskerville-Regular',
+    'monof55',
+    'SHPinscher-Regular',
+    'UnderwoodChampion',
+]
+
 const env = {
     path: '',
     autoSave: 20,
     itheme:   0,
     ilayout:  0,
+    ifont:    0,
     key: {},
 }
 window.env = env
@@ -49,6 +60,33 @@ function switchTheme(itheme) {
 
     env.itheme = itheme
     localStorage.setItem('theme', itheme)
+}
+
+function switchFont(font) {
+    let ifont = 0
+    if (font) {
+        ifont = fonts.indexOf(font)
+        if (ifont < 0 || ifont >= fonts.length) ifont = 0
+    } else {
+        const root = document.documentElement
+        const style = getComputedStyle(root)
+        const curFont = style.getPropertyValue('--primary-font')
+
+        let prevFont = ''
+        if (curFont) prevFont = curFont.replace("'", "").trim()
+
+        ifont = fonts.indexOf(prevFont)
+        ifont ++
+        if (ifont >= fonts.length) ifont = 0
+        font = fonts[ifont]
+    }
+
+    const nextFont = fonts[ifont]
+    console.log(`font: ${nextFont}(${ifont + 1})`)
+    document.documentElement.style.setProperty('--primary-font', nextFont)
+
+    env.font = font
+    localStorage.setItem('font', font)
 }
 
 function switchLayout(ilayout) {
@@ -256,7 +294,6 @@ window.onkeydown = function(e) {
         }
     }
 
-    console.dir(e)
     if (e.ctrlKey) {
         switch(e.code) {
             case 'Backquote': list();               stop = true; break;
@@ -265,8 +302,9 @@ window.onkeydown = function(e) {
             case 'KeyQ': list();                    stop = true; break;
             case 'KeyB': buffers();                 stop = true; break;
             case 'KeyM': switchTheme();             stop = true; break;
-            case 'KeyN': console.log('ups'); stop = true; break; // prevent new tab
             case 'KeyL': switchLayout();            stop = true; break;
+            case 'F10':
+            case 'KeyI': switchFont();              stop = true; break;
             case 'Backslash': showStat();           stop = true; break;
             case 'Digit0': showBuffers();           stop = true; break;
         }
@@ -351,6 +389,10 @@ window.onload = function() {
     // determine the theme if stored
     const themeStr = localStorage.getItem('theme')
     if (themeStr) switchTheme(parseInt(themeStr))
+
+    // determine the font if stored
+    const font = localStorage.getItem('font')
+    if (font) switchFont(font)
 
     // determine the layout if stored
     const layoutStr = localStorage.getItem('layout')

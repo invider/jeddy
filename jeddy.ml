@@ -1,6 +1,7 @@
+> come up with unique and descriptive name - Text Must Flow on the Local Web
+> unify the config and make fonts configurable within a theme/mood
 > introduce distinction between root and base directories
 > separate URL space for help, buffers and stat
-> introduce stat
 > buffer history browser
 > cache buffer changes in local store in case for disaster recovery
 > temporary messages in the status line
@@ -15,8 +16,9 @@
 > configuration text file
 > edit jeddy config as a text file
 > how to use in Readme
-> come up with unique and descriptive name
 > publish on npm
+V introduce stat
+V manually switch fonts
 V normalize RESTful paths
 V save all dirty buffers, not only the current one
 V mark dirty only on actual changes and not arrow move
@@ -27,3 +29,4 @@ V hide status line
 V dirty flag instead of save message
 V a status line to show 'Saved to ...' messages
 V non-editable directory listing
+
