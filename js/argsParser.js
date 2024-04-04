@@ -35,9 +35,16 @@ function argsParser(argv) {
                 env.trace = true
                 break
 
+            case 'h':
+            case 'help':
             case '-h':
             case '--help':
                 env.action = 'help'
+                break
+
+            case 'o':
+            case 'open':
+                env.open = true
                 break
         }
 

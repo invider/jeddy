@@ -21,6 +21,6 @@
   "homepage": "https://github.com/invider/jeddy#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "monaco-editor": "^0.20.0"
+    "open": "^7.3.0"
   }
 }

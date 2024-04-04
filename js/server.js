@@ -1,4 +1,5 @@
 const fs = require('fs')
+const open = require('open')
 const express = require('express')
 const bodyParser = require('body-parser')
 const util = require('./util.js')
@@ -122,7 +123,15 @@ function serve(environment) {
 
     app.post(workspacePath, saveHandler)
 
-    app.listen(env.port, env.bind, () => console.log(`Listening at http://${env.bind}:${env.port}`))
+    const at = `http://${env.bind}:${env.port}`
+    app.listen(env.port, env.bind, () => console.log(`Listening at ${at}`))
+
+    if (env.open) {
+        setTimeout(() => {
+            console.log(`Opening default browser at ${at}`)
+            open(at)
+        }, 2000)
+    }
 }
 
 module.exports = {
