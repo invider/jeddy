@@ -1,11 +1,6 @@
+const env = require('./env.js')
+
 function argsParser(argv) {
-    const env = {
-        port:   9101,
-        bind:   'localhost',
-        action: 'host-dir',
-        debug:  false,
-        trace:  false,
-    }
     env.editPath = process.cwd()
 
     let i = 2
@@ -42,8 +37,8 @@ function argsParser(argv) {
                 env.action = 'help'
                 break
 
-            case 'o':
-            case 'open':
+            case '-o':
+            case '--open':
                 env.open = true
                 break
         }

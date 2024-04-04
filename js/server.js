@@ -6,9 +6,28 @@ const util = require('./util.js')
 
 const EXPRESS_PATH = '/node_modules/express/index.js'
 
+const cfgPath = '/cfg'
 const workspacePath = '/workspace*'
 
 let env = {}
+
+function cfgHandler(req, res, next) {
+    const cfg = {
+        app:     env.app,
+        title:   env.title,
+        version: env.version,
+        release: env.release,
+        debug:   env.debug,
+        trace:   env.trace,
+        started: (new Date(env.started)).toISOString(),
+        uptime:  Math.floor((Date.now() - env.started)/1000),
+    }
+    const content = JSON.stringify(cfg, null, 4)
+
+    res.status(200)
+    res.setHeader('Content-Type', 'application/json')
+    res.end(content)
+}
 
 function loadHandler(req, res, next) {
     try {
@@ -119,8 +138,9 @@ function serve(environment) {
     // host static from /pub
     app.use('/', express.static(modulePath + '/pub'))
 
-    app.get(workspacePath, loadHandler)
+    app.get(cfgPath, cfgHandler)
 
+    app.get(workspacePath, loadHandler)
     app.post(workspacePath, saveHandler)
 
     const at = `http://${env.bind}:${env.port}`

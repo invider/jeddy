@@ -1,4 +1,5 @@
 > come up with unique and descriptive name - Text Must Flow on the Local Web
+> work folder .jeddy config
 > unify the config and make fonts configurable within a theme/mood
 > introduce distinction between root and base directories
 > separate URL space for help, buffers and stat
