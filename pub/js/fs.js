@@ -17,14 +17,13 @@ export function load(url, path, handlers, readOnly) {
                 handlers.onRaw(path, text, readOnly)
             } else if (status === 404) {
                 // 404 Not Found - a new file to create
-                handlers.onText(path, '', readOnly)
+                handlers.onNotFound(path, '', readOnly)
             } else {
                 handlers.onFailure(path, text)
             }
         })
 }
 
-// TODO move to external service and accept a buffer to save
 export function save(buffer, handlers, silent) {
     //const path = window.location.hash.substring(1)
     //const jed = document.getElementById('jed') // TODO get the content from the buffer
@@ -76,4 +75,52 @@ export function save(buffer, handlers, silent) {
 
 export function saveSilent(buffer, handlers) {
     return save(buffer, handlers, true)
+}
+
+export function loadRes(url, handlers) {
+    // load a resource
+    console.log(`loading: ${url}`)
+
+    let status = 0
+    fetch(url)
+        .then(res => {
+            status = res.status
+            return res.text()
+        }).then(text => {
+            if (status === 200) {
+                // 200 OK
+                handlers.onText(text)
+            } else if (status === 404) {
+                // 404 Not Found
+                handlers.onNotFound('')
+            } else {
+                handlers.onFailure(text)
+            }
+        })
+}
+
+export function saveRes(url, text, handlers) {
+    let lastStatus = 0
+
+    fetch(url, {
+        method: 'post',
+        body: text,
+    }).then(res => {
+        if (res.status === 200) {
+            if (handlers && handlers.onSuccess) {
+                handlers.onSuccess(res)
+            }
+        } else {
+            if (handlers && handlers.onFailure) {
+                handlers.onFailure(res)
+            }
+        }
+        lastStatus = res.status
+        return res.text()
+
+    }).then(response => {
+        if (lastStatus !== 200) {
+            console.error(`#${lastStatus}: ${response}`)
+        }
+    })
 }

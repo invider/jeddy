@@ -6,3 +6,7 @@ node_modules
 
 # ml
 *.bak
+
+# jeddy
+.jeddy
+

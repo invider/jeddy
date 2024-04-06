@@ -2,6 +2,7 @@ import { html2text, text2html } from './parser.js'
 import { load, save, saveSilent } from './fs.js'
 import { bufferControl } from './buffer.js'
 import { stat } from './stat.js'
+import { config } from './config.js'
 
 const themes = [
     'default',
@@ -25,10 +26,6 @@ const fonts = [
 
 const env = {
     path: '',
-    autoSave: 20,
-    itheme:   0,
-    ilayout:  0,
-    ifont:    0,
     key: {},
 }
 window.env = env
@@ -49,20 +46,21 @@ function onChange() {
     showCurBufferStatus()
 }
 
-function switchTheme(itheme) {
+function switchTheme(itheme, noSave) {
     if (itheme === undefined) {
-        itheme = (env.itheme || 0) + 1
+        itheme = (env.config.itheme || 0) + 1
         if (itheme >= themes.length) itheme = 0
     }
 
     console.log('theme: ' + themes[itheme])
     document.documentElement.setAttribute('data-theme', themes[itheme])
 
-    env.itheme = itheme
-    localStorage.setItem('theme', itheme)
+    env.config.itheme = itheme
+    //localStorage.setItem('theme', itheme)
+    if (!noSave) config.save()
 }
 
-function switchFont(font) {
+function switchFont(font, noSave) {
     let ifont = 0
     if (font) {
         ifont = fonts.indexOf(font)
@@ -85,13 +83,14 @@ function switchFont(font) {
     console.log(`font: ${nextFont}(${ifont + 1})`)
     document.documentElement.style.setProperty('--primary-font', nextFont)
 
-    env.font = font
-    localStorage.setItem('font', font)
+    env.config.font = font
+    //localStorage.setItem('font', font)
+    if (!noSave) config.save()
 }
 
-function switchLayout(ilayout) {
+function switchLayout(ilayout, noSave) {
     if (ilayout === undefined) {
-        ilayout = env.ilayout + 1
+        ilayout = env.config.ilayout + 1
     }
     if (ilayout > 1) {
         ilayout = 0
@@ -107,8 +106,15 @@ function switchLayout(ilayout) {
             status.style.display = 'none'
             break
     }
-    env.ilayout = ilayout
-    localStorage.setItem('layout', ilayout)
+    env.config.ilayout = ilayout
+    //localStorage.setItem('layout', ilayout)
+    if (!noSave) config.save()
+}
+
+function applyConfig(cfg, noSave) {
+    if (cfg.itheme !== undefined) switchTheme(cfg.itheme, noSave)
+    if (cfg.font !== undefined) switchFont(cfg.font, noSave)
+    if (cfg.ilayout !== undefined) switchLayout(cfg.ilayout, noSave)
 }
 
 function edit(text, path) {
@@ -177,17 +183,20 @@ const saveHandlers = {
     },
 }
 
+function onText(path, text, readOnly) {
+    if (readOnly) {
+        view(text, path)
+    } else {
+        edit(text, path)
+    }
+}
+
 const loadHandlers = {
-    onText: function(path, text, readOnly) {
-        if (readOnly) {
-            view(text, path)
-        } else {
-            edit(text, path)
-        }
-    },
+    onText: onText,
     onRaw: function(path, text, readOnly) {
         showHTML(text, path)
     },
+    onNotFound: onText,
     onFailure: function(path, text) {
         showHTML(text, path)
     }
@@ -257,7 +266,7 @@ function sync() {
 }
 
 function dirtyCheck() {
-    const before = Date.now() - (env.autoSave * 1000)
+    const before = Date.now() - ((env.config.autoSave || 20) * 1000)
     bufferControl.dirtyBefore(before).forEach(buf => {
         saveSilent(buf, saveHandlers)
     })
@@ -386,6 +395,13 @@ window.onload = function() {
     }
     bufferControl.bind(jed)
 
+    // load the config
+    config.load((config) => {
+        env.config = config
+        applyConfig(env.config, true)
+    })
+
+    /*
     // determine the theme if stored
     const themeStr = localStorage.getItem('theme')
     if (themeStr) switchTheme(parseInt(themeStr))
@@ -397,6 +413,7 @@ window.onload = function() {
     // determine the layout if stored
     const layoutStr = localStorage.getItem('layout')
     if (layoutStr) switchLayout(parseInt(layoutStr))
+    */
 
     sync()
 
