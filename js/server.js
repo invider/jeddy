@@ -6,13 +6,14 @@ const util = require('./util.js')
 
 const EXPRESS_PATH = '/node_modules/express/index.js'
 
-const cfgPath = '/cfg'
+const envcPath = '/envc'
 const workspacePath = '/workspace*'
 
 let env = {}
 
-function cfgHandler(req, res, next) {
-    const cfg = {
+// common environment
+function envcHandler(req, res, next) {
+    const envc = {
         app:     env.app,
         title:   env.title,
         version: env.version,
@@ -21,8 +22,9 @@ function cfgHandler(req, res, next) {
         trace:   env.trace,
         started: (new Date(env.started)).toISOString(),
         uptime:  Math.floor((Date.now() - env.started)/1000),
+        workspace: process.cwd(),
     }
-    const content = JSON.stringify(cfg, null, 4)
+    const content = JSON.stringify(envc, null, 4)
 
     res.status(200)
     res.setHeader('Content-Type', 'application/json')
@@ -138,7 +140,7 @@ function serve(environment) {
     // host static from /pub
     app.use('/', express.static(modulePath + '/pub'))
 
-    app.get(cfgPath, cfgHandler)
+    app.get(envcPath, envcHandler)
 
     app.get(workspacePath, loadHandler)
     app.post(workspacePath, saveHandler)
