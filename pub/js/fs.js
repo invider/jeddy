@@ -99,6 +99,19 @@ export function loadRes(url, handlers) {
         })
 }
 
+export function loadJSON(url, handlers) {
+    loadRes(url, {
+        onText: function(text) {
+            try {
+                const json = JSON.parse(text)
+                handlers.onJSON(json)
+            } catch (e) {
+                handlers.onFailure(url, e.toString(), e)
+            }
+        }
+    })
+}
+
 export function saveRes(url, text, handlers) {
     let lastStatus = 0
 

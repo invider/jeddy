@@ -1,4 +1,4 @@
-import { loadRes, saveRes } from './fs.js'
+import { loadJSON, saveRes } from './fs.js'
 
 const CONFIG_URL = 'workspace/.jeddy'
 
@@ -13,10 +13,10 @@ let activeConfig = {
 
 function load(onConfig) {
 
-    loadRes(CONFIG_URL, {
-        onText: function(text) {
-            const cfg = JSON.parse(text)
-            console.log('loaded config:\n' + text)
+    loadJSON(CONFIG_URL, {
+        onJSON: function(cfg) {
+            console.log('loaded config')
+            console.dir(cfg)
             activeConfig = cfg
             onConfig(cfg)
         },

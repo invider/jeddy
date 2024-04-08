@@ -1,5 +1,5 @@
 import { html2text, text2html } from './parser.js'
-import { load, save, saveSilent } from './fs.js'
+import { load, loadJSON, save, saveSilent } from './fs.js'
 import { bufferControl } from './buffer.js'
 import { stat } from './stat.js'
 import { config } from './config.js'
@@ -394,6 +394,21 @@ window.onload = function() {
         onChange()
     }
     bufferControl.bind(jed)
+
+    // load common env
+    loadJSON('/envc', {
+
+        onJSON: function(envc) {
+            console.log('loaded common env')
+            console.dir(envc)
+        },
+        onNotFound: function() {
+            console.err('common env not found!')
+        },
+        onFailure: function(url, message, e) {
+            console.err('unable to load common env: ' + message)
+        },
+    })
 
     // load the config
     config.load((config) => {
