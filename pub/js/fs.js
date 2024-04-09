@@ -108,7 +108,9 @@ export function loadJSON(url, handlers) {
             } catch (e) {
                 handlers.onFailure(url, e.toString(), e)
             }
-        }
+        },
+        onNotFound: handlers.onNotFound,
+        onFailure: handlers.onFailure,
     })
 }
 

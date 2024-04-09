@@ -3,12 +3,12 @@ import { loadJSON, saveRes } from './fs.js'
 const CONFIG_URL = 'workspace/.jeddy'
 
 let activeConfig = {
-    autoBuf:  5,
-    autoSave: 20,
-    saveKeeper: 5,
-    saveAnyways: 60,
-    itheme: 0,
-    ilayer: 0,
+    autoBuf:      5,
+    autoSave:     20,
+    saveKeeper:   3,
+    hardAutoSave: 60,
+    itheme:       0,
+    ilayer:       0,
 }
 
 function load(onConfig) {

@@ -31,11 +31,12 @@ function envcHandler(req, res, next) {
     res.end(content)
 }
 
-function loadHandler(req, res, next) {
+function workspaceLoadHandler(req, res, next) {
     try {
         const origPath = req.path.substring(workspacePath.length)
 
         function notFound(path) {
+            console.log(`404 Not Found: ${path}`)
             res.status(404).send(`Not Found: [${path}]`)
         }
 
@@ -61,7 +62,10 @@ function loadHandler(req, res, next) {
 
         const path = './' + origPath
 
-        if (!fs.existsSync(path)) notFound(origPath)
+        if (!fs.existsSync(path)) {
+            notFound(origPath)
+            return
+        }
 
         const lstat = fs.lstatSync(path)
         if (lstat.isDirectory()) {
@@ -89,7 +93,7 @@ function loadHandler(req, res, next) {
     }
 }
 
-function saveHandler(req, res, next) {
+function workspaceSaveHandler(req, res, next) {
     try { 
         const origPath = req.path.substring(workspacePath.length)
 
@@ -142,8 +146,8 @@ function serve(environment) {
 
     app.get(envcPath, envcHandler)
 
-    app.get(workspacePath, loadHandler)
-    app.post(workspacePath, saveHandler)
+    app.get(workspacePath, workspaceLoadHandler)
+    app.post(workspacePath, workspaceSaveHandler)
 
     const at = `http://${env.bind}:${env.port}`
     app.listen(env.port, env.bind, () => console.log(`Listening at ${at}`))

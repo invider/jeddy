@@ -69,7 +69,6 @@ class Stat {
             `<br>keystrokes: ${as.getKeyStrokes()}\n`,
         ].join('')
     }
-
 }
 
 export const stat = new Stat()

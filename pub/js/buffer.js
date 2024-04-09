@@ -23,6 +23,7 @@ class Buffer {
         this.readOnly = !!st.readOnly
         this.plainText = !!st.plainText
         this.lastSave = 0
+        this.lastTouch = 0
         this.dirty = false
         this.outOfSync = false
     }
@@ -64,6 +65,7 @@ class Buffer {
 
     // text source change notification
     touch() {
+        this.lastTouch = Date.now()
         if (!this.dirty) {
             this.dirty = true
             this.outOfSync = true
@@ -71,9 +73,17 @@ class Buffer {
         }
     }
 
+    isTouchedAfter(timestamp) {
+        return (timestamp < this.lastTouch)
+    }
+
     markSaved() {
         this.dirty = false
         this.lastSave = Date.now()
+    }
+
+    isSavedAfter(timestamp) {
+        return (timestamp < this.lastSave)
     }
 
     isDirty() {

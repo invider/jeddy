@@ -266,9 +266,25 @@ function sync() {
 }
 
 function dirtyCheck() {
-    const before = Date.now() - ((env.config.autoSave || 20) * 1000)
+    const now = Date.now()
+    const before = now - ((env.config.autoSave || 20) * 1000)
     bufferControl.dirtyBefore(before).forEach(buf => {
-        saveSilent(buf, saveHandlers)
+        if (buf.active) {
+            const saveThreshold = now - ((env.config.saveKeeper || 3) * 1000) 
+            if (buf.isTouchedAfter(saveThreshold)) {
+                const hardSaveDeadline = now - ((env.config.hardAutoSave || 60) * 1000)
+                if (!buf.isSavedAfter(hardSaveDeadline)) {
+                    console.log('saving anyways')
+                    saveSilent(buf, saveHandlers)
+                } else {
+                    console.log('ignore save - touched')
+                }
+            } else {
+                saveSilent(buf, saveHandlers)
+            }
+        } else {
+            saveSilent(buf, saveHandlers)
+        }
     })
 }
 
@@ -397,7 +413,6 @@ window.onload = function() {
 
     // load common env
     loadJSON('/envc', {
-
         onJSON: function(envc) {
             console.log('loaded common env')
             console.dir(envc)
