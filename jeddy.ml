@@ -1,9 +1,9 @@
+> cache buffer changes in local store in case for disaster recovery
+> buffer history browser
 > come up with unique and descriptive name - Text Must Flow on the Local Web
 > unify the config and make fonts configurable within a theme/mood
 > introduce distinction between root and base directories
 > separate URL space for help, buffers and stat
-> buffer history browser
-> cache buffer changes in local store in case for disaster recovery
 > temporary messages in the status line
 > open files in the read-only mode
 > cache changes in localstore on dirty each 3s or each N strokes

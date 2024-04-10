@@ -24,6 +24,11 @@ const fonts = [
     'UnderwoodChampion',
 ]
 
+const layouts = [
+    'full',
+    'minimal',
+]
+
 const env = {
     path: '',
     key: {},
@@ -90,13 +95,17 @@ function switchFont(font, noSave) {
 
 function switchLayout(ilayout, noSave) {
     if (ilayout === undefined) {
-        ilayout = env.config.ilayout + 1
+        if (env.config.ilayout === undefined) {
+            ilayout = 0
+        } else {
+            ilayout = env.config.ilayout + 1
+        }
     }
-    if (ilayout > 1) {
+    if (ilayout >= layouts.length) {
         ilayout = 0
     }
 
-    console.log('layout: ' + ilayout)
+    console.log('layout: ' + layouts[ilayout])
     const status = document.getElementById('status')
     switch(ilayout) {
         case 0:
@@ -107,7 +116,6 @@ function switchLayout(ilayout, noSave) {
             break
     }
     env.config.ilayout = ilayout
-    //localStorage.setItem('layout', ilayout)
     if (!noSave) config.save()
 }
 
