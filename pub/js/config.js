@@ -20,7 +20,7 @@ function load(onConfig) {
             activeConfig = cfg
             onConfig(cfg)
         },
-        onNotFound: function(text) {
+        onNotFound: function(path, text) {
             console.log('using default config:\n' + JSON.stringify(activeConfig, null, 4))
             onConfig(activeConfig)
         },

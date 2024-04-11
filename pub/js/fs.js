@@ -1,5 +1,7 @@
 let lastStatus = 0
 
+import cache from './cache.js'
+
 export function load(url, path, handlers, readOnly) {
     // load from the jeddy server
     console.log(`loading: ${url}`)
@@ -49,6 +51,7 @@ export function save(buffer, handlers, silent) {
         body: txt,
     }).then(res => {
         if (res.status === 200) {
+            cache.clearBuffer(buffer)
             if (handlers && handlers.onSuccess) {
                 handlers.onSuccess(buffer)
             }

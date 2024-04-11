@@ -2,6 +2,7 @@ import { html2text, text2html } from './parser.js'
 import { load, loadJSON, save, saveSilent } from './fs.js'
 import { bufferControl } from './buffer.js'
 import { stat } from './stat.js'
+import env from './env.js'
 import { config } from './config.js'
 
 const themes = [
@@ -29,10 +30,6 @@ const layouts = [
     'minimal',
 ]
 
-const env = {
-    path: '',
-    key: {},
-}
 window.env = env
 
 function focus() {
@@ -419,6 +416,7 @@ window.onload = function() {
     }
     bufferControl.bind(jed)
 
+    /*
     // load common env
     loadJSON('/envc', {
         onJSON: function(envc) {
@@ -432,12 +430,15 @@ window.onload = function() {
             console.err('unable to load common env: ' + message)
         },
     })
+    */
+    env.loadEnvc()
 
     // load the config
     config.load((config) => {
         env.config = config
         applyConfig(env.config, true)
     })
+
 
     /*
     // determine the theme if stored

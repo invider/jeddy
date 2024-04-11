@@ -2,12 +2,12 @@
 > buffer history browser
 > come up with unique and descriptive name - Text Must Flow on the Local Web
 > unify the config and make fonts configurable within a theme/mood
-> introduce distinction between root and base directories
+> introduce distinction between root and base directories 
 > separate URL space for help, buffers and stat
 > temporary messages in the status line
-> open files in the read-only mode
-> cache changes in localstore on dirty each 3s or each N strokes
-> ability to browse localstore buffers
+> open files in the read-only mode 
+> cache changes in localstore on dirty each 3s or each N strokes 
+> ability to browse localstore buffers 
 > prevent save of read-only files (like help)
 > more expressive dirty flag (change frame color?)
 > more expressive status line - show 'editing', 'home', enabled theme mode for 3s etc...
