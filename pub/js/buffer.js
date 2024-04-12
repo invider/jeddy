@@ -24,7 +24,9 @@ class Buffer {
         this.plainText = !!st.plainText
         this.lastSave = 0
         this.lastTouch = 0
+        this.lastCached = 0
         this.dirty = false
+        this.cached = true
         this.outOfSync = false
     }
 
@@ -66,6 +68,10 @@ class Buffer {
     // text source change notification
     touch() {
         this.lastTouch = Date.now()
+        if (this.cached) {
+            this.cached = false
+            this.lastCached = Date.now()
+        }
         if (!this.dirty) {
             this.dirty = true
             this.outOfSync = true
@@ -82,12 +88,25 @@ class Buffer {
         this.lastSave = Date.now()
     }
 
+    markCached() {
+        this.cached = true
+        this.lastCached = Date.now()
+    }
+
     isSavedAfter(timestamp) {
         return (timestamp < this.lastSave)
     }
 
+    isCachedAfter(timestamp) {
+        return (timestamp < this.lastCached)
+    }
+
     isDirty() {
         return this.dirty
+    }
+
+    isCached() {
+        return this.cached 
     }
 
     isAttached() {

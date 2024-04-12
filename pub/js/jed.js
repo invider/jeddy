@@ -2,8 +2,9 @@ import { html2text, text2html } from './parser.js'
 import { load, loadJSON, save, saveSilent } from './fs.js'
 import { bufferControl } from './buffer.js'
 import { stat } from './stat.js'
-import env from './env.js'
 import { config } from './config.js'
+import env from './env.js'
+import cache from './cache.js'
 
 const themes = [
     'default',
@@ -273,22 +274,34 @@ function sync() {
 function dirtyCheck() {
     const now = Date.now()
     const before = now - ((env.config.autoSave || 20) * 1000)
+
+    // for all buffers dirty for the autosave time...
     bufferControl.dirtyBefore(before).forEach(buf => {
         if (buf.active) {
             const saveThreshold = now - ((env.config.saveKeeper || 3) * 1000) 
             if (buf.isTouchedAfter(saveThreshold)) {
                 const hardSaveDeadline = now - ((env.config.hardAutoSave || 60) * 1000)
-                if (!buf.isSavedAfter(hardSaveDeadline)) {
-                    console.log('saving anyways')
-                    saveSilent(buf, saveHandlers)
+                if (buf.isSavedAfter(hardSaveDeadline)) {
+                    // ignoring hard save
                 } else {
-                    console.log('ignore save - touched')
+                    // saving anyways
+                    saveSilent(buf, saveHandlers)
                 }
             } else {
+                // dirty, active and hasn't been touched for some time
                 saveSilent(buf, saveHandlers)
             }
         } else {
+            // non-active dirty buffers should be saved right away,
+            // since they can't be touched
             saveSilent(buf, saveHandlers)
+        }
+    })
+
+    bufferControl.buffers.forEach(buf => {
+        const after = Date.now() - ((env.config.autoBuf || 1) * 1000)
+        if (!buf.isCached() && !buf.isCachedAfter(after)) {
+            cache.saveBuffer(buf)
         }
     })
 }

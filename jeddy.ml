@@ -1,3 +1,4 @@
+> accumulate stat in local cach
 > cache buffer changes in local store in case for disaster recovery
 > buffer history browser
 > come up with unique and descriptive name - Text Must Flow on the Local Web
@@ -6,7 +7,7 @@
 > separate URL space for help, buffers and stat
 > temporary messages in the status line
 > open files in the read-only mode 
-> cache changes in localstore on dirty each 3s or each N strokes 
+> cache changes in localstore on dirty each 3s or each N strokes  
 > ability to browse localstore buffers 
 > prevent save of read-only files (like help)
 > more expressive dirty flag (change frame color?)
@@ -30,3 +31,4 @@ V hide status line
 V dirty flag instead of save message
 V a status line to show 'Saved to ...' messages
 V non-editable directory listing
+
