@@ -252,7 +252,7 @@ function list() {
 function sync() {
     const path = window.location.hash.substring(1)
     const curBuffer = bufferControl.current()
-    if (curBuffer && curBuffer.path === path) return // already selected
+    if (curBuffer && curBuffer.getPath() === path) return // already selected
 
     if (path.startsWith('!')) {
         switch(path) {
@@ -267,7 +267,12 @@ function sync() {
                 break
         }
     } else {
-        openPath('workspace/' + path, path)
+        if (!env.common) {
+            console.log('skipping sync, waiting for common')
+            setTimeout(sync, 100)
+        } else {
+            openPath('workspace/' + path, path)
+        }
     }
 }
 

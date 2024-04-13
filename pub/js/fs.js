@@ -3,6 +3,14 @@ let lastStatus = 0
 import cache from './cache.js'
 
 export function load(url, path, handlers, readOnly) {
+    // try to get from cache
+    const cachedText = cache.loadBuffer(path)
+    if (cachedText) {
+        console.log('restoring: ' + path)
+        handlers.onText(path, cachedText, readOnly)
+        return
+    }
+
     // load from the jeddy server
     console.log(`loading: ${url}`)
     let status = 0

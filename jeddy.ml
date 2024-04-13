@@ -1,5 +1,4 @@
 > accumulate stat in local cach
-> cache buffer changes in local store in case for disaster recovery
 > buffer history browser
 > come up with unique and descriptive name - Text Must Flow on the Local Web
 > unify the config and make fonts configurable within a theme/mood
@@ -18,6 +17,7 @@
 > edit jeddy config as a text file
 > how to use in Readme
 > publish on npm
+V cache buffer changes in local store in case for disaster recovery
 V work folder .jeddy config
 V introduce stat
 V manually switch fonts
@@ -31,4 +31,5 @@ V hide status line
 V dirty flag instead of save message
 V a status line to show 'Saved to ...' messages
 V non-editable directory listing
+
 
