@@ -434,21 +434,6 @@ window.onload = function() {
     }
     bufferControl.bind(jed)
 
-    /*
-    // load common env
-    loadJSON('/envc', {
-        onJSON: function(envc) {
-            console.log('loaded common env')
-            console.dir(envc)
-        },
-        onNotFound: function() {
-            console.err('common env not found!')
-        },
-        onFailure: function(url, message, e) {
-            console.err('unable to load common env: ' + message)
-        },
-    })
-    */
     env.loadEnvc()
 
     // load the config
@@ -456,21 +441,6 @@ window.onload = function() {
         env.config = config
         applyConfig(env.config, true)
     })
-
-
-    /*
-    // determine the theme if stored
-    const themeStr = localStorage.getItem('theme')
-    if (themeStr) switchTheme(parseInt(themeStr))
-
-    // determine the font if stored
-    const font = localStorage.getItem('font')
-    if (font) switchFont(font)
-
-    // determine the layout if stored
-    const layoutStr = localStorage.getItem('layout')
-    if (layoutStr) switchLayout(parseInt(layoutStr))
-    */
 
     sync()
 

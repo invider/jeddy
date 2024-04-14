@@ -33,17 +33,18 @@ function envcHandler(req, res, next) {
 
 function workspaceLoadHandler(req, res, next) {
     try {
-        const origPath = req.path.substring(workspacePath.length)
-
+        const localPath = req.path.substring(workspacePath.length)
+        const parentPath = util.parentPath(localPath)
         function notFound(path) {
             console.log(`404 Not Found: ${path}`)
             res.status(404).send(`Not Found: [${path}]`)
         }
 
-        function listPath(path, parent) {
+        function listPath(path, parentPath) {
+            console.log('listing: ' + path)
             const list = []
-            if (parent) {
-                list.push(`<li><a href="#${path}/..">..</a>`)
+            if (parentPath !== null) {
+                list.push(`<li><a href="#${parentPath}">..</a>`)
             }
 
             fs.readdirSync(path).forEach(file => {
@@ -55,22 +56,21 @@ function workspaceLoadHandler(req, res, next) {
             res.send(list.join('\n'))
         }
 
-        // list local folder on empty path
-        if (origPath === '') {
-            return listPath('./', false)
+        if (localPath === '') {
+            // no local path, list the workdir (root)
+            return listPath('./', null)
         }
 
-        const path = './' + origPath
+        const path = './' + localPath
 
         if (!fs.existsSync(path)) {
-            notFound(origPath)
+            notFound(localPath)
             return
         }
 
         const lstat = fs.lstatSync(path)
         if (lstat.isDirectory()) {
-            console.log('listing: ' + path)
-            return listPath(path, true)
+            return listPath(path, parentPath)
 
         } else if (lstat.isFile()) {
             console.log('loading: ' + path)
@@ -86,7 +86,7 @@ function workspaceLoadHandler(req, res, next) {
                 }
             })
         } else {
-            notFound(origPath)
+            notFound(localPath)
         }
     } catch(e) {
         console.log(e)
@@ -95,10 +95,10 @@ function workspaceLoadHandler(req, res, next) {
 
 function workspaceSaveHandler(req, res, next) {
     try { 
-        const origPath = req.path.substring(workspacePath.length)
+        const localPath = req.path.substring(workspacePath.length)
 
         // guard against empty path
-        if (origPath === '') {
+        if (localPath === '') {
             const msg = 'Unable to save - no file specified'
             console.error(msg)
             res.status(500)
@@ -106,7 +106,7 @@ function workspaceSaveHandler(req, res, next) {
             return
         }
 
-        const path = './' + origPath
+        const path = './' + localPath
         if (env.trace) console.log('---------------------------------------')
         console.log('saving: ' + path)
         if (env.trace) console.log('---------------------------------------')
