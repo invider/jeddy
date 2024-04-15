@@ -33,7 +33,12 @@ function envcHandler(req, res, next) {
 
 function workspaceLoadHandler(req, res, next) {
     try {
-        const localPath = req.path.substring(workspacePath.length)
+        let readOnly = false
+        let localPath = decodeURIComponent(req.path.substring(workspacePath.length))
+        if (localPath.startsWith('^')) {
+            readOnly = true
+            localPath = localPath.substring(1)
+        }
         const parentPath = util.parentPath(localPath)
         function notFound(path) {
             console.log(`404 Not Found: ${path}`)
@@ -42,14 +47,15 @@ function workspaceLoadHandler(req, res, next) {
 
         function listPath(path, parentPath) {
             console.log('listing: ' + path)
+            const prefix = readOnly? '^' : ''
             const list = []
             if (parentPath !== null) {
-                list.push(`<li><a href="#${parentPath}">..</a>`)
+                list.push(`<li><a href="#${prefix}${parentPath}">..</a>`)
             }
 
             fs.readdirSync(path).forEach(file => {
                 const filePath = util.joinPath(path, file)
-                list.push(`<li><a href="#${filePath}">${file}</a>`)
+                list.push(`<li><a href="#${prefix}${filePath}">${file}</a>`)
             })
 
             res.status(303) // HTTP See Other - to indicate the directory listing

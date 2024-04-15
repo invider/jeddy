@@ -271,7 +271,8 @@ function sync() {
             console.log('skipping sync, waiting for common')
             setTimeout(sync, 100)
         } else {
-            openPath('workspace/' + path, path)
+            const readOnly = path.startsWith('^')
+            openPath('workspace/' + path, path, readOnly)
         }
     }
 }

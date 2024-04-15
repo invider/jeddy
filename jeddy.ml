@@ -1,5 +1,6 @@
-> accumulate stat in local cache
+> accumulate stat in local folder with autosave
 > buffer history browser
+> change log in the local file?
 > come up with unique and descriptive name - Text Must Flow on the Local Web - TextPositive?
 > unify the config and make fonts configurable within a theme/mood
 > introduce distinction between root and base directories
@@ -9,10 +10,11 @@
 > more expressive status line - show 'editing', 'home', enabled theme mode for 3s etc...
 > terminal themes 
 > simple black and white themes
-> edit jeddy config as a text file
+> command interface - selected text or current line
 > how to use in Readme
 > publish on npm
 
+V edit jeddy config as a text file
 V separate URL space for help, buffers and stat
 V configuration text file
 V prevent save of read-only files (like help)
