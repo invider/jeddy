@@ -244,9 +244,10 @@ function showStat() {
     window.location.hash = path
 }
 
-function list() {
-    window.location.hash = ''
-    sync()
+function list(readOnly) {
+    if (readOnly) window.location.hash = '^'
+    else window.location.hash = ''
+    //sync()
 }
 
 function sync() {
@@ -334,7 +335,7 @@ window.onkeydown = function(e) {
         switch(e.code) {
             case 'F1':      showHelp();                 stop = true; break;
             case 'F2':      save(buf, saveHandlers);    stop = true; break;
-            case 'F3':      list();                     stop = true; break;
+            case 'F3':      list(false);                stop = true; break;
             case 'F4':      showBuffers();              stop = true; break;
             case 'F9':      showStat();                 stop = true; break;
             case 'F10':     switchTheme();              stop = true; break;
@@ -345,13 +346,15 @@ window.onkeydown = function(e) {
 
     if (e.ctrlKey) {
         switch(e.code) {
-            case 'Backquote': list();               stop = true; break;
+            case 'Backquote': list(false);          stop = true; break;
             case 'KeyH': showHelp();                stop = true; break;
             case 'KeyS': save(buf, saveHandlers);   stop = true; break;
-            case 'KeyQ': list();                    stop = true; break;
+            case 'KeyQ': list(false);               stop = true; break;
+            case 'KeyY': list(true);                stop = true; break;
             case 'KeyB': buffers();                 stop = true; break;
             case 'KeyM': switchTheme();             stop = true; break;
             case 'KeyL': switchLayout();            stop = true; break;
+            case 'F3':   list(true);                stop = true; break;
             case 'F10':
             case 'KeyI': switchFont();              stop = true; break;
             case 'Backslash': showStat();           stop = true; break;

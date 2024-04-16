@@ -5,7 +5,6 @@
 > unify the config and make fonts configurable within a theme/mood
 > introduce distinction between root and base directories
 > temporary messages in the status line
-> open files in the read-only mode
 > ability to browse localstore buffers or maybe just reset them?
 > more expressive status line - show 'editing', 'home', enabled theme mode for 3s etc...
 > terminal themes 
@@ -14,6 +13,7 @@
 > how to use in Readme
 > publish on npm
 
+V open files in the read-only mode
 V edit jeddy config as a text file
 V separate URL space for help, buffers and stat
 V configuration text file

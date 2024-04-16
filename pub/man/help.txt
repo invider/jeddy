@@ -9,6 +9,7 @@ Esc - return focus to the editor
 F1  or Ctrl+H - show help
 F2  or Ctrl+S - save the file.
 F3  or Ctrl+Q - list files in the work folder
+Ctrl+F3 or Ctrl+Y - list files in the view-only mode
 F4  or Ctrl+B - list active buffers
 F9 or Ctrl+Backslash - show the stat
 F10 or Ctrl+M - switch the mood
@@ -57,4 +58,8 @@ You can open a file directly by providing it's relative path in the URL string, 
 
 Opens work-folder/data.txt.
 
-
+----------------
+How to Configure
+----------------
+Jeddy creates a .jeddy file in the working directory with configuration JSON.
+Just edit and save that JSON as a regular text file.
