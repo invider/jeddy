@@ -7,7 +7,7 @@ export function load(url, path, handlers, readOnly) {
     const cachedText = cache.loadBuffer(path)
     if (cachedText) {
         console.log('restoring: ' + path)
-        handlers.onText(path, cachedText, readOnly)
+        handlers.onText(path, cachedText, readOnly, true)
         return
     }
 

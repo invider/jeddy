@@ -123,7 +123,7 @@ function applyConfig(cfg, noSave) {
     if (cfg.ilayout !== undefined) switchLayout(cfg.ilayout, noSave)
 }
 
-function edit(text, path) {
+function edit(text, path, markDirty) {
     const jed = document.getElementById('jed')
     const buf = bufferControl.create({
         jed,
@@ -133,6 +133,7 @@ function edit(text, path) {
         readOnly:  false,
         plainText: true,
     })
+    if (markDirty) buf.touch()
     env.path = path
     showCurBufferStatus()
 }
@@ -189,11 +190,11 @@ const saveHandlers = {
     },
 }
 
-function onText(path, text, readOnly) {
+function onText(path, text, readOnly, markDirty) {
     if (readOnly) {
         view(text, path)
     } else {
-        edit(text, path)
+        edit(text, path, markDirty)
     }
 }
 
