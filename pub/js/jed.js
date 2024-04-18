@@ -447,6 +447,8 @@ window.onload = function() {
         applyConfig(env.config, true)
     })
 
+    stat.load()
+
     sync()
 
     setInterval(dirtyCheck, 1000)

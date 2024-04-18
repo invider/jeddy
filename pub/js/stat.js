@@ -1,3 +1,7 @@
+import { loadJSON, saveRes } from './fs.js'
+
+const STAT_URL = 'workspace/.stat'
+
 class Session {
 
     constructor() {
@@ -68,6 +72,45 @@ class Stat {
             `words: ${as.getWords()}\n`,
             `<br>keystrokes: ${as.getKeyStrokes()}\n`,
         ].join('')
+    }
+
+    renderJSON() {
+        return {
+           activeSession: this.activeSession,
+        }
+    }
+
+    restore(rstat) {
+        console.log('restoring from')
+        console.dir(rstat)
+    }
+
+    load() {
+        const stat = this
+        loadJSON(STAT_URL, {
+            onJSON: function(restoredStat) {
+                console.log('loaded stat')
+                console.dir(restoredStat)
+                stat.restore(restoredStat)
+            },
+            onNotFound: function(path, text) {
+                console.log('no existing stat found, creating new')
+            },
+            onFailure: function(path, text) {
+                console.log('unable to load stat')
+            },
+        })
+    }
+
+    save() {
+        const json = this.renderJSON()
+        const body = JSON.stringify(json, null, 4)
+        saveRes(STAT_URL, body, {
+            onSuccess: function() {
+            },
+            onFailure: function() {
+            },
+        })
     }
 }
 

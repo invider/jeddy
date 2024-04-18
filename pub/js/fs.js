@@ -1,6 +1,7 @@
 let lastStatus = 0
 
 import cache from './cache.js'
+import { stat } from './stat.js'
 
 export function load(url, path, handlers, readOnly) {
     // try to get from cache
@@ -82,6 +83,8 @@ export function save(buffer, handlers, silent) {
             console.error(`#${lastStatus}: ${response}`)
         }
     })
+
+    stat.save()
 }
 
 export function saveSilent(buffer, handlers) {

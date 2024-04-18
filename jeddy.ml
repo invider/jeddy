@@ -1,4 +1,5 @@
 > accumulate stat in local folder with autosave
+
 > buffer history browser
 > change log in the local file?
 > come up with unique and descriptive name - Text Must Flow on the Local Web - TextPositive?
@@ -33,6 +34,8 @@ V hide status line
 V dirty flag instead of save message
 V a status line to show 'Saved to ...' messages
 V non-editable directory listing
+
+
 
 
 
