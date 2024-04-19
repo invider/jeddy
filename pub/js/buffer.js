@@ -1,4 +1,5 @@
 import { html2text, text2html } from './parser.js'
+import { showCurBufferStatus } from './status.js'
 
 let ibuffers = 0
 let abuffers = 0
@@ -51,6 +52,7 @@ class Buffer {
 
     activate() {
         if (!this.control) throw `Unable to activate [${this.name}] - no control binded`
+        this.control.currentBuffer = this
 
         const jed = this.control.jed
         jed.contentEditable = !this.readOnly
@@ -63,6 +65,7 @@ class Buffer {
 
         this.active = true
         window.location.hash = this.path
+        showCurBufferStatus()
     }
 
     // text source change notification
@@ -76,6 +79,7 @@ class Buffer {
             this.dirty = true
             this.outOfSync = true
             this.lastSave = Date.now()
+            showCurBufferStatus()
         }
     }
 
@@ -86,6 +90,7 @@ class Buffer {
     markSaved() {
         this.dirty = false
         this.lastSave = Date.now()
+        if (this.active) showCurBufferStatus()
     }
 
     markCached() {
@@ -182,7 +187,6 @@ export class BufferControl {
         const buffer = new Buffer(st)
         buffer.bind(this)
         buffer.activate()
-        this.currentBuffer = buffer
 
         if (buffer.attached && !buffer.readOnly) {
             this.buffers.push(buffer)
@@ -195,7 +199,6 @@ export class BufferControl {
         if (!buffer) return
         this.hibernateCurrent()
         buffer.activate()
-        this.currentBuffer = buffer
     }
 
     activateAt(index) {

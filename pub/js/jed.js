@@ -1,6 +1,7 @@
 import { html2text, text2html } from './parser.js'
 import { load, loadJSON, save, saveSilent } from './fs.js'
 import { bufferControl } from './buffer.js'
+import { showStatus, showCurBufferStatus } from './status.js'
 import { stat } from './stat.js'
 import { config } from './config.js'
 import env from './env.js'
@@ -46,7 +47,7 @@ function onChange() {
     if (!buf) return
 
     buf.touch()
-    showCurBufferStatus()
+    //showCurBufferStatus()
 }
 
 function switchTheme(itheme, noSave) {
@@ -135,7 +136,7 @@ function edit(text, path, markDirty) {
     })
     if (markDirty) buf.touch()
     env.path = path
-    showCurBufferStatus()
+    //showCurBufferStatus()
 }
 
 function view(text, path) {
@@ -149,7 +150,7 @@ function view(text, path) {
         plainText: true,
     })
     env.path = path
-    showCurBufferStatus()
+    //showCurBufferStatus()
 }
 
 function showHTML(text, path) {
@@ -163,27 +164,13 @@ function showHTML(text, path) {
         plainText: false,
     })
     env.path = path
-    showCurBufferStatus()
-}
-
-function showStatus(msg, timeout) {
-    msg = msg || '&nbsp;'
-    const status = document.getElementById('status')
-    status.innerHTML = msg
-}
-
-function showCurBufferStatus() {
-    const cbuf = bufferControl.current()
-    if (cbuf) {
-        bufferControl.hintDirty()
-        showStatus( cbuf.status() )
-    }
+    //showCurBufferStatus()
 }
 
 const saveHandlers = {
     onSuccess: function(buffer) {
         buffer.markSaved()
-        if (buffer.active) showCurBufferStatus()
+        //if (buffer.active) showCurBufferStatus()
     },
     onFailure: function(buffer) {
         if (buffer.active) showStatus(`Can't save [${buffer.title()}]`)
@@ -214,7 +201,7 @@ function openPath(url, path, readOnly) {
     if (bufferControl.open(path)) {
         console.log(`buffered: ${url}`)
         env.path = path
-        showCurBufferStatus()
+        //showCurBufferStatus()
         return
     }
 
@@ -232,7 +219,7 @@ function showBuffers() {
     const htmlList = bufferControl.htmlList()
     showHTML(htmlList, path)
     env.path = path
-    showCurBufferStatus()
+    //showCurBufferStatus()
     window.location.hash = path
 }
 
@@ -241,7 +228,7 @@ function showStat() {
     const html = stat.renderHTML()
     showHTML(html, path)
     env.path = path
-    showCurBufferStatus()
+    //showCurBufferStatus()
     window.location.hash = path
 }
 
