@@ -1,14 +1,27 @@
 import { loadJSON, saveRes } from './fs.js'
+import env from './env.js'
 
 const STAT_URL = 'workspace/.stat'
 
 class Session {
 
-    constructor() {
+    constructor(st) {
         this.started = Date.now()
-        this.closed = 0
         this.keyStrokes = 0
         this.words = 0
+
+        if (st) this.restore(st)
+
+        if (!this.id) {
+            const startedDate = new Date(this.started)
+            const year = startedDate.getUTCFullYear()
+            const month = startedDate.getUTCMonth() + 1
+            const day = startedDate.getUTCDate()
+            const smonth = month.toString().padStart(2, '0')
+            const sday = day.toString().padStart(2, '0')
+
+            this.id = 'S' + year + '-' + smonth + '-' + sday
+        }
     }
 
     keyStroke(e) {
@@ -47,17 +60,74 @@ class Session {
         return `${hh}${mm}${sc}`
     }
 
+    snapshot() {
+        return {
+            id:         this.id,
+            started:    this.started,
+            keyStrokes: this.keyStrokes,
+            words:      this.words,
+        }
+    }
+
+    restore(st) {
+        if (st.id) this.id = st.id
+        if (st.started) this.started = st.started
+        if (st.keyStrokes) this.keyStrokes = st.keyStrokes
+        if (st.words) this.words = st.words
+    }
 }
 
 class Stat {
 
     constructor() {
+        this.sessions = []
+        this.sessionCatalog = {}
+
+        this.globalSession = new Session({
+            id: 'GXXXX-XX-XX',
+        })
         this.activeSession = new Session()
+        this.addSession(this.activeSession)
+    }
+
+    addSession(session) {
+        if (!session || !session.id) return
+        this.removeSession(session)
+        this.sessionCatalog[session.id] = session
+        this.sessions.push(session)
+    }
+
+    removeSession(session) {
+        if (!session || !session.id) return
+        const id = session.id
+        const at = this.indexById(id)
+        if (at >= 0) {
+            this.sessions.splice(at, 1)
+        }
+        if (this.sessionCatalog[id]) {
+            delete this.sessionCatalog[id]
+        }
+    }
+
+    indexById(id) {
+        if (!id) return -1
+        for (let i = 0; i < this.sessions.length; i++) {
+            const session = this.sessions[i]
+            if (session.id === id) return i
+        }
+        return -1
+    }
+
+    sessionExists(id) {
+        if (!id) return false
+        if (this.sessionCatalog[id]) return true
+        return false
     }
 
     keyStroke(e) {
         if (e.ctrlKey || e.altKey || e.metaKey) return
         this.activeSession.keyStroke(e)
+        this.globalSession.keyStroke(e)
     }
 
     renderHTML() {
@@ -74,23 +144,43 @@ class Stat {
         ].join('')
     }
 
-    renderJSON() {
-        return {
-           activeSession: this.activeSession,
+    snapshot() {
+        const snap = {
+            globalSession: this.globalSession,
+            sessions: [],
         }
+        this.sessions.forEach(session => {
+            snap.sessions.push(session.snapshot())
+        })
+        return snap
     }
 
     restore(rstat) {
-        console.log('restoring from')
-        console.dir(rstat)
+        if (env.trace) {
+            console.log('restoring stat from the working dir:')
+            console.dir(rstat)
+        }
+
+        if (rstat.globalSession) {
+            this.globalSession = new Session(rstat.globalSession)
+        }
+        if (rstat.sessions) {
+            const stat = this
+            rstat.sessions.forEach(rsession => {
+                stat.addSession( new Session(rsession) )
+            })
+        }
+        if (this.sessionExists(this.activeSession.id)) {
+            // replace current active session with a restored one
+            if (env.trace) console.log(`restoring active session [${this.activeSession.id}]`)
+            this.activeSession = this.sessionCatalog[this.activeSession.id]
+        }
     }
 
     load() {
         const stat = this
         loadJSON(STAT_URL, {
             onJSON: function(restoredStat) {
-                console.log('loaded stat')
-                console.dir(restoredStat)
                 stat.restore(restoredStat)
             },
             onNotFound: function(path, text) {
@@ -98,13 +188,13 @@ class Stat {
             },
             onFailure: function(path, text) {
                 console.log('unable to load stat')
+                console.log(text)
             },
         })
     }
 
     save() {
-        const json = this.renderJSON()
-        const body = JSON.stringify(json, null, 4)
+        const body = JSON.stringify(this.snapshot(), null, 4)
         saveRes(STAT_URL, body, {
             onSuccess: function() {
             },

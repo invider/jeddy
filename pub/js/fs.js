@@ -30,6 +30,7 @@ export function load(url, path, handlers, readOnly) {
                 // 404 Not Found - a new file to create
                 handlers.onNotFound(path, '', readOnly)
             } else {
+                console.error(text)
                 handlers.onFailure(path, text)
             }
         })
@@ -120,6 +121,7 @@ export function loadJSON(url, handlers) {
                 const json = JSON.parse(text)
                 handlers.onJSON(json)
             } catch (e) {
+                console.error(e)
                 handlers.onFailure(url, e.toString(), e)
             }
         },
@@ -140,6 +142,7 @@ export function saveRes(url, text, handlers) {
                 handlers.onSuccess(res)
             }
         } else {
+            console.error(res)
             if (handlers && handlers.onFailure) {
                 handlers.onFailure(res)
             }
