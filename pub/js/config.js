@@ -7,6 +7,7 @@ let activeConfig = {
     autoSave:     20,
     saveKeeper:   3,
     hardAutoSave: 60,
+    sessionPause: 180,
     itheme:       0,
     ilayer:       0,
 }

@@ -7,6 +7,8 @@ class Session {
 
     constructor(st) {
         this.started = Date.now()
+        this.lastTouch = 0
+        this.time = 0
         this.keyStrokes = 0
         this.words = 0
 
@@ -36,6 +38,15 @@ class Session {
                 this.words ++
             }
         }
+
+        // determine timespan
+        const now = Date.now()
+        const span = (now - this.lastTouch) / 1000
+        if (span < (env.config.sessionPause || 180)) {
+            // got another active span
+            this.time += span
+        }
+        this.lastTouch = now
     }
 
     getKeyStrokes() {
@@ -64,6 +75,7 @@ class Session {
         return {
             id:         this.id,
             started:    this.started,
+            time:       Math.floor(this.time),
             keyStrokes: this.keyStrokes,
             words:      this.words,
         }
@@ -72,6 +84,7 @@ class Session {
     restore(st) {
         if (st.id) this.id = st.id
         if (st.started) this.started = st.started
+        if (st.time) this.time = st.time
         if (st.keyStrokes) this.keyStrokes = st.keyStrokes
         if (st.words) this.words = st.words
     }

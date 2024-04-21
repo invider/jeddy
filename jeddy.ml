@@ -1,5 +1,6 @@
-> accumulate stat in local folder with autosave
-> buffer history browser
+
+> show local and global session stat
+> fix save/caching bug when old version is got saved
 > unify the config and make fonts configurable within a theme/mood
 > introduce distinction between root and base directories
 > ability to browse localstore buffers or maybe just reset them?
@@ -11,8 +12,12 @@
 > how to use in Readme
 > come up with unique and descriptive name - Text Must Flow on the Local Web - TextPositive?
 > publish on npm
+
+> buffer history browser
 > change log in the local file?
 
+V accumulate time buffer
+V accumulate stat in local folder with autosave
 V move out status control to a separate module
 V fix status line when switching from help to a buffer #N
 V open files in the read-only mode
@@ -35,4 +40,16 @@ V hide status line
 V dirty flag instead of save message
 V a status line to show 'Saved to ...' messages
 V non-editable directory listing
+
+
+
+
+
+
+
+
+
+
+
+
 
