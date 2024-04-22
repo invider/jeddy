@@ -51,6 +51,7 @@ export function save(buffer, handlers, silent) {
         if (!silent) console.log(`ignoring save for the special path: [${path}]`)
         return
     }
+    console.dir(buffer)
     const txt = buffer.getText()
 
     const url = 'workspace/' + path
@@ -62,6 +63,7 @@ export function save(buffer, handlers, silent) {
     }).then(res => {
         if (res.status === 200) {
             cache.clearBuffer(buffer)
+            buffer.markCached()
             if (handlers && handlers.onSuccess) {
                 handlers.onSuccess(buffer)
             }

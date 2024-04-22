@@ -1,5 +1,3 @@
-
-> show local and global session stat
 > fix save/caching bug when old version is got saved
 > unify the config and make fonts configurable within a theme/mood
 > introduce distinction between root and base directories
@@ -16,6 +14,7 @@
 > buffer history browser
 > change log in the local file?
 
+V show local and global session stat
 V accumulate time buffer
 V accumulate stat in local folder with autosave
 V move out status control to a separate module
@@ -40,16 +39,4 @@ V hide status line
 V dirty flag instead of save message
 V a status line to show 'Saved to ...' messages
 V non-editable directory listing
-
-
-
-
-
-
-
-
-
-
-
-
 

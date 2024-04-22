@@ -3,6 +3,19 @@ import env from './env.js'
 
 const STAT_URL = 'workspace/.stat'
 
+function sec2hhmmsc(sec) {
+    const h = Math.floor(sec / 3600)
+    sec = sec % 3600
+    const m = Math.floor(sec / 60)
+    sec = sec % 60
+
+    const hh = h? `${h}h ` : ''
+    const mm = m? `${m.toString().padStart(2, '0')}m ` : ''
+    const sc = `${sec.toString().padStart(2, '0')}s`
+
+    return `${hh}${mm}${sc}`
+}
+
 class Session {
 
     constructor(st) {
@@ -15,14 +28,7 @@ class Session {
         if (st) this.restore(st)
 
         if (!this.id) {
-            const startedDate = new Date(this.started)
-            const year = startedDate.getUTCFullYear()
-            const month = startedDate.getUTCMonth() + 1
-            const day = startedDate.getUTCDate()
-            const smonth = month.toString().padStart(2, '0')
-            const sday = day.toString().padStart(2, '0')
-
-            this.id = 'S' + year + '-' + smonth + '-' + sday
+            this.id = 'S' + this.renderDate()
         }
     }
 
@@ -59,16 +65,11 @@ class Session {
 
     getLength() {
         let sec = Math.round((Date.now() - this.started) / 1000)
-        let h = Math.floor(sec / 3600)
-        sec = sec % 3600
-        let m = Math.floor(sec / 60)
-        sec = sec % 60
+        return sec2hhmmsc(sec)
+    }
 
-        const hh = h? `${h}h ` : ''
-        const mm = m? `${m}m ` : ''
-        const sc = `${sec}s`
-
-        return `${hh}${mm}${sc}`
+    getTime() {
+        return sec2hhmmsc(Math.floor(this.time))
     }
 
     snapshot() {
@@ -79,6 +80,30 @@ class Session {
             keyStrokes: this.keyStrokes,
             words:      this.words,
         }
+    }
+
+    renderDate() {
+        const startedDate = new Date(this.started)
+        const year = startedDate.getUTCFullYear()
+        const month = startedDate.getUTCMonth() + 1
+        const day = startedDate.getUTCDate()
+        const smonth = month.toString().padStart(2, '0')
+        const sday = day.toString().padStart(2, '0')
+
+        return (year + '-' + smonth + '-' + sday)
+    }
+
+    renderHTML(title) {
+        const started = new Date(this.started)
+        return [
+            `<h3>${title}</h3>`,
+            `started: ${started.toString()}<br>`,
+            `<hr>`,
+            `time: ${this.getTime()}<br>`,
+            `words: ${this.getWords()}<br>`,
+            `keystrokes: ${this.getKeyStrokes()}`,
+            `<hr>`,
+        ].join('\n')
     }
 
     restore(st) {
@@ -144,22 +169,22 @@ class Stat {
     }
 
     renderHTML() {
+        const gs = this.globalSession
+        const gsHTML = gs.renderHTML('Workspace Stat')
+
         const as = this.activeSession
-        const started = new Date(as.started)
+        const asDate = as.renderDate()
+        const asHTML = as.renderHTML('Daily Session: ' + asDate)
+
         return [
-            `<h3>Session Stat</h3>\n`,
-            `<hr>\n`,
-            `started: ${started.toString()}\n`,
-            `<br>length: ${as.getLength()}\n`,
-            `<hr>\n`,
-            `words: ${as.getWords()}\n`,
-            `<br>keystrokes: ${as.getKeyStrokes()}\n`,
+            gsHTML,
+            asHTML,
         ].join('')
     }
 
     snapshot() {
         const snap = {
-            globalSession: this.globalSession,
+            globalSession: this.globalSession.snapshot(),
             sessions: [],
         }
         this.sessions.forEach(session => {

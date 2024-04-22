@@ -1,5 +1,6 @@
 import { html2text, text2html } from './parser.js'
 import { showCurBufferStatus } from './status.js'
+import env from './env.js'
 
 let ibuffers = 0
 let abuffers = 0
@@ -71,13 +72,13 @@ class Buffer {
     // text source change notification
     touch() {
         this.lastTouch = Date.now()
+        this.outOfSync = true
         if (this.cached) {
             this.cached = false
             this.lastCached = Date.now()
         }
         if (!this.dirty) {
             this.dirty = true
-            this.outOfSync = true
             this.lastSave = Date.now()
             showCurBufferStatus()
         }
@@ -119,6 +120,7 @@ class Buffer {
     }
 
     syncIn() {
+        if (env.debug) console.log('syncing...')
         if (!this.control) throw `Can't sync in - [${this.name}] is expected to be binded`
         if (!this.active) throw `Can't sync in - [${this.name}] is hibernated`
         this.text = html2text(this.control.jed.innerHTML)
