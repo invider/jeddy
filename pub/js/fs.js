@@ -2,6 +2,7 @@ let lastStatus = 0
 
 import cache from './cache.js'
 import { stat } from './stat.js'
+import env from './env.js'
 
 export function load(url, path, handlers, readOnly) {
     // try to get from cache
@@ -37,9 +38,6 @@ export function load(url, path, handlers, readOnly) {
 }
 
 export function save(buffer, handlers, silent) {
-    //const path = window.location.hash.substring(1)
-    //const jed = document.getElementById('jed') // TODO get the content from the buffer
-    //const txt = html2text(jed.innerHTML)
     if (!buffer) return
     if (!buffer.attached) return
     if (buffer.readOnly) {
@@ -51,7 +49,8 @@ export function save(buffer, handlers, silent) {
         if (!silent) console.log(`ignoring save for the special path: [${path}]`)
         return
     }
-    console.dir(buffer)
+    if (env.debug) console.dir(buffer)
+
     const txt = buffer.getText()
 
     const url = 'workspace/' + path

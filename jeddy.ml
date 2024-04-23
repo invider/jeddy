@@ -1,4 +1,4 @@
-> fix save/caching bug when old version is got saved
+> fix save/caching bug when old version gets saved
 > unify the config and make fonts configurable within a theme/mood
 > introduce distinction between root and base directories
 > ability to browse localstore buffers or maybe just reset them?
@@ -7,6 +7,8 @@
 > terminal themes 
 > simple black and white themes
 > command interface - selected text or current line
+help
+
 > how to use in Readme
 > come up with unique and descriptive name - Text Must Flow on the Local Web - TextPositive?
 > publish on npm

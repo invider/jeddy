@@ -1,4 +1,4 @@
-import { html2text, text2html } from './parser.js'
+import { html2text } from './parser.js'
 import { load, loadJSON, save, saveSilent } from './fs.js'
 import { bufferControl } from './buffer.js'
 import { showStatus, showCurBufferStatus } from './status.js'
@@ -301,6 +301,38 @@ function dirtyCheck() {
     })
 }
 
+function getCurrentLine() {
+    let selection = window.getSelection();
+
+    if (selection.rangeCount > 0) {
+        return (selection.baseNode.data || '')
+    }
+    return ''
+}
+
+// TODO extract into a separate command module
+function exec(line) {
+    switch(line) {
+        case 'help': showHelp(); break;
+        default:
+            console.log(`unknown command: [${line}]`)
+    }
+}
+
+function cmd() {
+    const selectedText = window.getSelection().toString()
+    if (selectedText) {
+        if (env.trace) console.log(`executing selection: [${selectedText}]`)
+        exec(selectedText)
+    } else {
+        const curLine = getCurrentLine()
+        if (curLine) {
+            if (env.trace) console.log(`executing current line: [${curLine}]`)
+            exec(curLine)
+        }
+    }
+}
+
 window.onhashchange = function() {
     sync()
 }
@@ -334,6 +366,7 @@ window.onkeydown = function(e) {
 
     if (e.ctrlKey) {
         switch(e.code) {
+            case 'Enter': cmd();                    stop = true; break;
             case 'Backquote': list(false);          stop = true; break;
             case 'KeyH': showHelp();                stop = true; break;
             case 'KeyS': save(buf, saveHandlers);   stop = true; break;

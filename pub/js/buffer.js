@@ -179,6 +179,10 @@ export class BufferControl {
         this.jed = jed
     }
 
+    getBindedElement() {
+        return this.jed
+    }
+
     hibernateCurrent() {
         if (!this.currentBuffer) return
         this.currentBuffer.hibernate()
@@ -224,6 +228,11 @@ export class BufferControl {
 
     current() {
         return this.currentBuffer
+    }
+
+    currentText() {
+        if (!this.currentBuffer) return ''
+        return this.currentBuffer.getText()
     }
 
     dirtyBefore(before) {
