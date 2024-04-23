@@ -244,16 +244,20 @@ function sync() {
     if (curBuffer && curBuffer.getPath() === path) return // already selected
 
     if (path.startsWith('!')) {
-        switch(path) {
-            case '!help':
-                showHelp()
-                break
-            case '!buffers':
-                showBuffers()
-                break
-            case '!stat':
-                showStat()
-                break
+        if (path.startsWith('!snap')) {
+            bufferControl.openSnap(path)
+        } else {
+            switch(path) {
+                case '!help':
+                    showHelp()
+                    break
+                case '!buffers':
+                    showBuffers()
+                    break
+                case '!stat':
+                    showStat()
+                    break
+            }
         }
     } else {
         if (!env.common) {
@@ -399,15 +403,16 @@ window.onkeydown = function(e) {
 
     if (env.key.rctrl) {
         switch(e.code) {
-            case 'Digit1': bufferControl.snapAt(0); stop = true; break;
-            case 'Digit2': bufferControl.snapAt(1); stop = true; break;
-            case 'Digit3': bufferControl.snapAt(2); stop = true; break;
-            case 'Digit4': bufferControl.snapAt(3); stop = true; break;
-            case 'Digit5': bufferControl.snapAt(4); stop = true; break;
-            case 'Digit6': bufferControl.snapAt(5); stop = true; break;
-            case 'Digit7': bufferControl.snapAt(6); stop = true; break;
-            case 'Digit8': bufferControl.snapAt(7); stop = true; break;
-            case 'Digit9': bufferControl.snapAt(8); stop = true; break;
+            case 'Digit1': bufferControl.snapAt(1); stop = true; break;
+            case 'Digit2': bufferControl.snapAt(2); stop = true; break;
+            case 'Digit3': bufferControl.snapAt(3); stop = true; break;
+            case 'Digit4': bufferControl.snapAt(4); stop = true; break;
+            case 'Digit5': bufferControl.snapAt(5); stop = true; break;
+            case 'Digit6': bufferControl.snapAt(6); stop = true; break;
+            case 'Digit7': bufferControl.snapAt(7); stop = true; break;
+            case 'Digit8': bufferControl.snapAt(8); stop = true; break;
+            case 'Digit9': bufferControl.snapAt(9); stop = true; break;
+            case 'Digit0': bufferControl.snapAt(0); stop = true; break;
         }
     }
 

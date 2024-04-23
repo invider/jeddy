@@ -162,15 +162,7 @@ export class BufferControl {
         this.buffers = []
         this.snaps = []
         for (let i = 0; i < 10; i++) {
-            const buffer = new Buffer({
-                path: '.snap' + (i + 1),
-                text: '',
-                attached:  false,
-                readOnly:  false,
-                plainText: true,
-            })
-            buffer.bind(this)
-            this.snaps[i] = buffer
+            this.createSnapAt(i)
         }
         this.dir = {}
     }
@@ -211,8 +203,35 @@ export class BufferControl {
         this.activate( this.buffers[index] )
     }
 
+    createSnapAt(i) {
+        const buffer = new Buffer({
+            path: '!snap' + i,
+            text: '',
+            attached:  false,
+            readOnly:  false,
+            plainText: true,
+        })
+        buffer.bind(this)
+        this.snaps[i] = buffer
+    }
+
     snapAt(index) {
+        if (!Number.isInteger(index) || isNaN(index)) {
+            console.error(`Can't open snap [${snapNumberPath}]!`)
+            return
+        }
+        if (!this.snaps[index]) {
+            console.log(`creating extra snap #${index}`)
+            this.createSnapAt(index)
+        }
         this.activate( this.snaps[index] )
+    }
+
+    openSnap(path) {
+        // cut the "!snap" part from path
+        const snapNumberPath = path.substring(5)
+        const index = parseInt(snapNumberPath)
+        this.snapAt(index)
     }
 
     open(path) {
