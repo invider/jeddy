@@ -23,6 +23,7 @@ class Buffer {
         this.versions = []
         this.snap()
         this.readOnly = !!st.readOnly
+        this.snapOnly = !!st.snapOnly
         this.plainText = !!st.plainText
         this.lastSave = 0
         this.lastTouch = 0
@@ -35,7 +36,7 @@ class Buffer {
     snap() {
         this.versions.push({
             time: Date.now(),
-            text: this.text,
+            text: this.getText(),
         })
     }
 
@@ -135,6 +136,10 @@ class Buffer {
         return this.path
     }
 
+    setText(text) {
+        this.text = text
+    }
+
     getText() {
         if (this.active && this.outOfSync) this.syncIn()
         return this.text
@@ -199,6 +204,11 @@ export class BufferControl {
         buffer.activate()
     }
 
+    refreshCurrent() {
+        if (!this.currentBuffer) return
+        this.currentBuffer.activate()
+    }
+
     activateAt(index) {
         this.activate( this.buffers[index] )
     }
@@ -209,10 +219,16 @@ export class BufferControl {
             text: '',
             attached:  false,
             readOnly:  false,
+            snapOnly:  true,
             plainText: true,
         })
         buffer.bind(this)
         this.snaps[i] = buffer
+    }
+
+    setSnapAt(i, text) {
+        if (!this.snaps[i]) this.createSnapAt(i)
+        this.snaps[i].setText(text)
     }
 
     snapAt(index) {
@@ -225,6 +241,10 @@ export class BufferControl {
             this.createSnapAt(index)
         }
         this.activate( this.snaps[index] )
+    }
+
+    getSnaps() {
+        return this.snaps
     }
 
     openSnap(path) {

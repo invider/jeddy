@@ -1,5 +1,5 @@
-> fix save/caching bug when old version gets saved
-> cache snap buffers in local store
+> fix save/caching bug when old version gets saved>
+> rename buffer.snap() to more appropriate name (changeset?)
 > clean snap buffers
 > unify the config and make fonts configurable within a theme/mood
 > introduce distinction between root and base directories
@@ -17,6 +17,7 @@
 > buffer history browser
 > change log in the local file?
 
+V cache snap buffers in local store
 V show local and global session stat
 V accumulate time buffer
 V accumulate stat in local folder with autosave
@@ -42,6 +43,7 @@ V hide status line
 V dirty flag instead of save message
 V a status line to show 'Saved to ...' messages
 V non-editable directory listing
+
 
 
 

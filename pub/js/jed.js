@@ -297,7 +297,14 @@ function dirtyCheck() {
         }
     })
 
+    // cache if needed
     bufferControl.buffers.forEach(buf => {
+        const after = Date.now() - ((env.config.autoBuf || 1) * 1000)
+        if (!buf.isCached() && !buf.isCachedAfter(after)) {
+            cache.saveBuffer(buf)
+        }
+    })
+    bufferControl.snaps.forEach(buf => {
         const after = Date.now() - ((env.config.autoBuf || 1) * 1000)
         if (!buf.isCached() && !buf.isCachedAfter(after)) {
             cache.saveBuffer(buf)
@@ -437,6 +444,11 @@ window.onkeyup = function(e) {
     }
 }
 
+function afterEnvLoad() {
+    cache.loadSnaps()
+    bufferControl.refreshCurrent()
+}
+
 window.onload = function() {
     const jed = document.getElementById('jed')
     jed.onblur = () => focus() // stay always in focus
@@ -464,7 +476,7 @@ window.onload = function() {
     }
     bufferControl.bind(jed)
 
-    env.loadEnvc()
+    env.loadEnvc(afterEnvLoad)
 
     // load the config
     config.load((config) => {

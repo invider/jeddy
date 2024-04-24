@@ -15,12 +15,14 @@ const env = {
     trace: false,
 }
 
-function loadEnvc() {
+function loadEnvc(after) {
     loadJSON(ENVC_URL, {
         onJSON: function(envc) {
             env.common = envc
             env.debug = !!envc.debug
             env.trace = !!envc.trace
+
+            if (after) after()
         },
         onNotFound: function(path, text) {
             env.common = defaultEnvc

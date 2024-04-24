@@ -38,16 +38,16 @@ export function load(url, path, handlers, readOnly) {
 }
 
 export function save(buffer, handlers, silent) {
-    if (!buffer) return
-    if (!buffer.attached) return
+    if (!buffer) return false
+    if (!buffer.attached) return false
     if (buffer.readOnly) {
         if (!silent) console.log(`ignoring save for read-only [${buffer.path}]`)
-        return
+        return false
     }
     const path = buffer.getPath()
     if (!path || path.startsWith('!')) {
         if (!silent) console.log(`ignoring save for the special path: [${path}]`)
-        return
+        return false
     }
     if (env.debug) console.dir(buffer)
 
@@ -87,6 +87,7 @@ export function save(buffer, handlers, silent) {
     })
 
     stat.save()
+    return true
 }
 
 export function saveSilent(buffer, handlers) {

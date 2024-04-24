@@ -1,17 +1,21 @@
 import env from './env.js'
+import { bufferControl } from './buffer.js'
 
-export function saveBuffer(buffer) {
-    if (!env.common) return // common env must be loaded in order to form workspace-specific id
-    if (!buffer) return
-    if (!buffer.attached) return
+function saveBuffer(buffer) {
+    if (!env.common) return false // common env must be loaded in order to form workspace-specific id
+    if (!buffer) return false
+    if (buffer.snapOnly) {
+        return saveSnaps()
+    }
+    if (!buffer.attached) return false
     if (buffer.readOnly) {
         if (env.trace) console.log(`ignoring cache for read-only [${buffer.path}]`)
-        return
+        return false
     }
     const path = buffer.getPath()
     if (!path || path.startsWith('!')) {
         if (env.trace) console.log(`ignoring save for the special path: [${path}]`)
-        return
+        return false
     }
     const txt = buffer.getText()
 
@@ -19,9 +23,34 @@ export function saveBuffer(buffer) {
     if (env.trace) console.log('caching buffer: ' + id)
     localStorage.setItem(id, txt)
     buffer.markCached()
+    return true
 }
 
-export function loadBuffer(path) {
+function saveSnaps() {
+    const snaps = bufferControl.getSnaps()
+    const list = snaps.map(buf => {
+        if (buf) {
+            return buf.getText()
+        }
+    })
+    const id = '@:' + env.common.workspace + ':!snaps'
+
+    const data = {
+        snaps: list,
+    }
+    const raw = JSON.stringify(data)
+
+    localStorage.setItem(id, raw)
+
+    snaps.forEach(buf => {
+        if (buf) {
+            buf.markCached()
+        }
+    })
+    return true
+}
+
+function loadBuffer(path) {
     if (!env.common) return // common env must be loaded in order to form workspace-specific id
     // load from cache
     const id = '@:' + env.common.workspace + ':' + path
@@ -32,7 +61,24 @@ export function loadBuffer(path) {
     return txt
 }
 
-export function clearBuffer(buffer) {
+function loadSnaps() {
+    const id = '@:' + env.common.workspace + ':!snaps'
+    if (env.trace) console.log('restoring snaps from ' + id)
+    const raw = localStorage.getItem(id)
+    if (!raw) return false
+
+    const data = JSON.parse(raw)
+    if (!data || (typeof data !== 'object') || !data.snaps) return false
+    data.snaps.forEach((snap, i) => {
+        if (snap) {
+            bufferControl.setSnapAt(i, snap)
+        }
+    })
+
+    return true
+}
+
+function clearBuffer(buffer) {
     if (!env.common) return // common env must be loaded in order to form workspace-specific id
     if (!buffer) return
     const path = buffer.getPath()
@@ -46,5 +92,6 @@ export function clearBuffer(buffer) {
 export default {
     saveBuffer,
     loadBuffer,
+    loadSnaps,
     clearBuffer,
 }
