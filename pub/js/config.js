@@ -6,6 +6,7 @@ let activeConfig = {
     autoBuf:      5,
     autoSave:     20,
     saveKeeper:   3,
+    popupTime:    1.35,
     hardAutoSave: 60,
     sessionPause: 180,
     itheme:       0,

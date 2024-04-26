@@ -1,5 +1,5 @@
 import { html2text, text2html } from './parser.js'
-import { showCurBufferStatus } from './status.js'
+import status from './status.js'
 import env from './env.js'
 
 let ibuffers = 0
@@ -21,7 +21,7 @@ class Buffer {
         this.path = st.path || ''
         this.text = st.text || ''
         this.versions = []
-        this.snap()
+        this.snapshot()
         this.readOnly = !!st.readOnly
         this.snapOnly = !!st.snapOnly
         this.plainText = !!st.plainText
@@ -33,7 +33,7 @@ class Buffer {
         this.outOfSync = false
     }
 
-    snap() {
+    snapshot() {
         this.versions.push({
             time: Date.now(),
             text: this.getText(),
@@ -67,7 +67,7 @@ class Buffer {
 
         this.active = true
         window.location.hash = this.path
-        showCurBufferStatus()
+        status.showCurBuffer()
     }
 
     // text source change notification
@@ -81,7 +81,7 @@ class Buffer {
         if (!this.dirty) {
             this.dirty = true
             this.lastSave = Date.now()
-            showCurBufferStatus()
+            status.showCurBuffer()
         }
     }
 
@@ -92,7 +92,7 @@ class Buffer {
     markSaved() {
         this.dirty = false
         this.lastSave = Date.now()
-        if (this.active) showCurBufferStatus()
+        if (this.active) status.showCurBuffer()
     }
 
     markCached() {

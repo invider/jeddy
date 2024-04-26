@@ -1,21 +1,25 @@
 import { html2text } from './parser.js'
 import { load, loadJSON, save, saveSilent } from './fs.js'
 import { bufferControl } from './buffer.js'
-import { showStatus, showCurBufferStatus } from './status.js'
 import { stat } from './stat.js'
 import { config } from './config.js'
+import { evo } from './evo.js'
 import env from './env.js'
 import cache from './cache.js'
+import status from './status.js'
 
-const themes = [
-    'default',
-    'solar',      // light solarized
-    'eclipse',    // dark solarized
-    'dark',
-    'amber-term',
-    'green-term',
-    'e-ink',
+const themeData = [
+    'default',      'Default',
+    'solar',        'Solar',       // light solarized
+    'eclipse',      'Eclipse',     // dark solarized
+    'dark',         'Dark',
+    'amber-term',   'Amber Term',
+    'green-term',   'Green Term',
+    'e-ink',        'E-Ink',
 ]
+
+const themes = themeData.filter((e, i) => i % 2 === 0)
+const themeNames = themeData.filter((e, i) => i % 2 === 1)
 
 const fonts = [
     'PixelOperator',
@@ -47,7 +51,6 @@ function onChange() {
     if (!buf) return
 
     buf.touch()
-    //showCurBufferStatus()
 }
 
 function switchTheme(itheme, noSave) {
@@ -56,8 +59,11 @@ function switchTheme(itheme, noSave) {
         if (itheme >= themes.length) itheme = 0
     }
 
-    console.log('theme: ' + themes[itheme])
+    const themeId = themes[itheme]
+    const themeName = themeNames[itheme]
+    console.log(`theme: @${themeId} - [${themeName}]`)
     document.documentElement.setAttribute('data-theme', themes[itheme])
+    if (!noSave) status.show(themeName, env.config.popupTime || 1)
 
     env.config.itheme = itheme
     //localStorage.setItem('theme', itheme)
@@ -136,7 +142,6 @@ function edit(text, path, markDirty) {
     })
     if (markDirty) buf.touch()
     env.path = path
-    //showCurBufferStatus()
 }
 
 function view(text, path) {
@@ -150,7 +155,6 @@ function view(text, path) {
         plainText: true,
     })
     env.path = path
-    //showCurBufferStatus()
 }
 
 function showHTML(text, path) {
@@ -164,16 +168,14 @@ function showHTML(text, path) {
         plainText: false,
     })
     env.path = path
-    //showCurBufferStatus()
 }
 
 const saveHandlers = {
     onSuccess: function(buffer) {
         buffer.markSaved()
-        //if (buffer.active) showCurBufferStatus()
     },
     onFailure: function(buffer) {
-        if (buffer.active) showStatus(`Can't save [${buffer.title()}]`)
+        if (buffer.active) status.show(`Can't save [${buffer.title()}]`)
     },
 }
 
@@ -201,7 +203,6 @@ function openPath(url, path, readOnly) {
     if (bufferControl.open(path)) {
         console.log(`buffered: ${url}`)
         env.path = path
-        //showCurBufferStatus()
         return
     }
 
@@ -219,7 +220,6 @@ function showBuffers() {
     const htmlList = bufferControl.htmlList()
     showHTML(htmlList, path)
     env.path = path
-    //showCurBufferStatus()
     window.location.hash = path
 }
 
@@ -228,7 +228,6 @@ function showStat() {
     const html = stat.renderHTML()
     showHTML(html, path)
     env.path = path
-    //showCurBufferStatus()
     window.location.hash = path
 }
 
@@ -268,6 +267,9 @@ function sync() {
             openPath('workspace/' + path, path, readOnly)
         }
     }
+}
+
+function tick() {
 }
 
 function dirtyCheck() {
@@ -489,4 +491,5 @@ window.onload = function() {
     sync()
 
     setInterval(dirtyCheck, 1000)
+    setInterval(evo, 125)
 }

@@ -3,6 +3,7 @@ let lastStatus = 0
 import cache from './cache.js'
 import { stat } from './stat.js'
 import env from './env.js'
+import status from './status.js'
 
 export function load(url, path, handlers, readOnly) {
     // try to get from cache
@@ -83,6 +84,11 @@ export function save(buffer, handlers, silent) {
     }).then(response => {
         if (lastStatus !== 200) {
             console.error(`#${lastStatus}: ${response}`)
+        } else {
+            if (!silent) {
+                const bufferStatus = buffer.status()
+                status.show('Saved ' + bufferStatus, env.config.popupTime || 1)
+            }
         }
     })
 

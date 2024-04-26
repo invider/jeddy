@@ -1,5 +1,4 @@
 > fix save/caching bug when old version gets saved>
-> rename buffer.snap() to more appropriate name (changeset?)
 > clean snap buffers
 > unify the config and make fonts configurable within a theme/mood
 > introduce distinction between root and base directories
@@ -17,6 +16,7 @@
 > buffer history browser
 > change log in the local file?
 
+V rename buffer.snap() to more appropriate name
 V cache snap buffers in local store
 V show local and global session stat
 V accumulate time buffer
