@@ -4,6 +4,7 @@ import { bufferControl } from './buffer.js'
 import { stat } from './stat.js'
 import { config } from './config.js'
 import { evo } from './evo.js'
+import cmd from './cmd.js'
 import env from './env.js'
 import cache from './cache.js'
 import status from './status.js'
@@ -214,6 +215,7 @@ function showHelp() {
     openPath('man/help.txt', path, true)
     //window.location.hash = path
 }
+cmd.register('help', showHelp)
 
 function showBuffers() {
     const path = '!buffers'
@@ -323,25 +325,22 @@ function getCurrentLine() {
     return ''
 }
 
+/*
 // TODO extract into a separate command module
 function exec(line) {
-    switch(line) {
-        case 'help': showHelp(); break;
-        default:
-            console.log(`unknown command: [${line}]`)
-    }
 }
+*/
 
-function cmd() {
+function runCommand() {
     const selectedText = window.getSelection().toString()
     if (selectedText) {
         if (env.trace) console.log(`executing selection: [${selectedText}]`)
-        exec(selectedText)
+        cmd.exec(selectedText)
     } else {
         const curLine = getCurrentLine()
         if (curLine) {
             if (env.trace) console.log(`executing current line: [${curLine}]`)
-            exec(curLine)
+            cmd.exec(curLine)
         }
     }
 }
@@ -379,7 +378,7 @@ window.onkeydown = function(e) {
 
     if (e.ctrlKey) {
         switch(e.code) {
-            case 'Enter': cmd();                    stop = true; break;
+            case 'Enter': runCommand();             stop = true; break;
             case 'Backquote': list(false);          stop = true; break;
             case 'KeyH': showHelp();                stop = true; break;
             case 'KeyS': save(buf, saveHandlers);   stop = true; break;

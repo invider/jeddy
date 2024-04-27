@@ -3,7 +3,6 @@
 > unify the config and make fonts configurable within a theme/mood
 > introduce distinction between root and base directories
 > ability to browse localstore buffers or maybe just reset them?
-> temporary messages in the status line
 > more expressive status line - show 'editing', 'home', enabled theme mode for 3s etc...
 > terminal themes 
 > simple black and white themes
@@ -16,6 +15,7 @@
 > buffer history browser
 > change log in the local file?
 
+V temporary messages in the status line
 V rename buffer.snap() to more appropriate name
 V cache snap buffers in local store
 V show local and global session stat
