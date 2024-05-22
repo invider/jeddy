@@ -1,6 +1,6 @@
 {
   "name": "jeddy",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "web-local text editor",
   "main": "jeddy.js",
   "scripts": {
@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/invider/jeddy#readme",
   "dependencies": {
-    "express": "^4.17.1",
-    "open": "^7.3.0"
+    "express": "4.19",
+    "open": "10.1.0"
   }
 }

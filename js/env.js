@@ -1,7 +1,7 @@
 const env = {
     app:     'jeddy',
     title:   'Text Positive Jeddy',
-    version: '0.1',
+    version: '0.2',
     release: 'Development Release 1',
     port:    9101,
     bind:    'localhost',
